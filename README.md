@@ -6,10 +6,10 @@ This is the problem it tries to solve:
 Supouse you are a developer who works in a team with a designer.
 
 Your designer, gives you a set of pure HTML template files like:
- +   layout.html: containing just header, footer, menu, and a lorem ipsum content.
- +   text_fonts.html: Where you have different text styles to use around.
- +   icons.html: A full html with icons, maybe with a description telling you where to use them.
- +   menues.html. Diferent menues.
+1.   layout.html: containing just header, footer, menu, and a lorem ipsum content.
+2.   text_fonts.html: Where you have different text styles to use around.
+3.   icons.html: A full html with icons, maybe with a description telling you where to use them.
+4.   menues.html. Diferent menues.
 
 So, you have to break them, use the parts you need, and convert them into php peaces of code.
 
