@@ -5,7 +5,7 @@ abstract class Lexer {
     const EOF       = -1; // represent end of file char
     const EOF_TYPE  = 1;  // represent EOF token type
     protected $input;     // input string
-    protected $p = 0;     // index into input of current character
+    public $p = 0;     // index into input of current character
     protected $c;         // current character
 
     public function Lexer($input) {

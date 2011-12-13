@@ -14,7 +14,7 @@ class ListLexer extends Lexer {
     const RBRACK    = 5;
     const TAG_START_OPENING = 6; // <!---
     const TAG_DOUBLE_CLOSING= 7; // --->
-    const TAG_DOUBLE_END_CLOSING= 8; // <!---/
+    const TAG_DOUBLE_END_OPENING= 8; // <!---/
     const TAG_SIMPLE_CLOSING= 9; // /--->
     const TPL_ATTRIBUTE= 10;
     const PHP_OPENING= 11;
@@ -24,7 +24,7 @@ class ListLexer extends Lexer {
                                "COLON", "RBRACK",
                                "TAG_START_OPENING",
                                "TAG_DOUBLE_CLOSING",
-                               "TAG_DOUBLE_END_CLOSING",
+                               "TAG_DOUBLE_END_OPENING",
                                "TAG_SIMPLE_CLOSING",
                                "TPL_ATTRIBUTE",
                                "PHP_OPENING",
@@ -83,7 +83,7 @@ class ListLexer extends Lexer {
                     
                 break;
                 case '<':
-                    if($token = $this->TAG_DOUBLE_END_CLOSING()){
+                    if($token = $this->TAG_DOUBLE_END_OPENING()){
                        return $token;
                     }
                     elseif($token = $this->TAG_START_OPENING()){
@@ -152,7 +152,7 @@ class ListLexer extends Lexer {
 
 
     /** <!---/ **/
-    public function TAG_DOUBLE_END_CLOSING(){
+    public function TAG_DOUBLE_END_OPENING(){
         $ar = array('<', '!', '-', '-', '-', '/');
         $this->freeze();
 
@@ -164,7 +164,7 @@ class ListLexer extends Lexer {
             $this->consume();
         }
 
-        return new Token(self::TAG_DOUBLE_END_CLOSING, '', array(
+        return new Token(self::TAG_DOUBLE_END_OPENING, '', array(
             'line' => $this->frozen['line'],
             'col' => $this->frozen['col'],
             'char' => $this->frozen['p'],
