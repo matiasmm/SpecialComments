@@ -13,7 +13,11 @@ class Token {
     
     public function __toString() {
         $tname = ListLexer::$tokenNames[$this->type];
-        return "<'" . $this->text . "'," . $tname . "> " .  implode(',', $this->data);
+        $data = '';
+        if(isset($this->data['line'])){
+            $data.= "Line: " .   $this->data['line'] . " Col: ". $this->data['col'];
+        }
+        return "<'" . $this->text . "'," . $tname . ">" . $data;
     }
 }
 

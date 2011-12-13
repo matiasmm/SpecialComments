@@ -4,8 +4,8 @@ require_once('lexer.php');
 
 class ListLexer extends Lexer {
 
-    protected $line = 1;
-    protected $col = 1;
+    public $line = 1;
+    public $col = 1;
     
 
     const NAME      = 2;
@@ -43,7 +43,8 @@ class ListLexer extends Lexer {
         return $this->c >= 'a' &&
                $this->c <= 'z' ||
                $this->c >= 'A' &&
-               $this->c <= 'Z';
+               $this->c <= 'Z' ||
+               $this->c == '_';
     }
 
     public function consume(){
@@ -107,7 +108,7 @@ class ListLexer extends Lexer {
                 break;
                 case ':':
                     $this->consume();
-                    return new Token(self::COLON, '');
+                    return new Token(self::COLON, ':');
                 break;
                 case '?':
                     if($token = $this->PHP_CLOSING()){

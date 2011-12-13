@@ -5,9 +5,16 @@ require_once('Token.php');
 require_once('ListParser.php');
 
 
-$input = '[ a, b, c, d]';
+$input = ' basura inicial
+    <!---test_double--->
+     something
+     <!---/test_double--->
+
+     <!---/test_unary--->
+    
+    ';
 $lexer = new ListLexer($input);
 $parser = new ListParser($lexer);
-$parser->rlist(); // begin parsing at rule list
-
+$parser->parse(); // begin parsing at rule list
+$parser->show_tree();
 ?>
