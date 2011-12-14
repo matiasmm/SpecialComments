@@ -35,8 +35,17 @@ class ListLexer extends Lexer {
         return ListLexer::$tokenNames[$x];
     }
 
+    public function get_context(){
+        return array($this->line, $this->col, $this->p);
+    }
+
     public function ListLexer($input) {
         parent::__construct($input);
+    }
+
+    public function getContent($from, $to){
+
+        return substr($this->input, $from, ($to-$from <=0)? 0 : $to-$from);
     }
     
     public function isLETTER() {
@@ -44,7 +53,11 @@ class ListLexer extends Lexer {
                $this->c <= 'z' ||
                $this->c >= 'A' &&
                $this->c <= 'Z' ||
-               $this->c == '_';
+               $this->c == '_' ||
+               $this->c >= '0' &&
+               $this->c <= '9'
+
+                ;
     }
 
     public function consume(){

@@ -11,23 +11,28 @@ class ListParser extends Parser {
         parent::__construct($input);
     }
 
-    public function show_tree(){
-        echo "\n";
-        foreach($this->tree as $b){
-            printf("%s, pos_start: %d, pos_end: %d \n", $b->text, $b->pos_start, $b->pos_end);
+    public function show_tree($tree= null, $s = ""){
+        $tree = ($s)? $tree : $this->tree;
+        
+        foreach($tree as $b){
+            printf("\n".$s."%s", trim($b->text));
+            if(isset($b->tree)){
+                $this->show_tree($b->tree,$s."      ");
+            }
         }
     }
 
     public function parse(){
 
         while($this->lookahead->type != ListLexer::EOF_TYPE && $this->lookahead->type != ListLexer::EOF){
+            $this->wait_for(ListLexer::TAG_START_OPENING);
             $this->add_nodes_to_tree($this->tree);
         }
 
     }
 
     public function add_nodes_to_tree(&$tree){
-        $this->wait_for(ListLexer::TAG_START_OPENING);
+        
         if($this->lookahead->type == ListLexer::TAG_START_OPENING){
             $tree[] = $tag = new stdClass();
             $this->context_attributes($tag);
@@ -35,36 +40,54 @@ class ListParser extends Parser {
             if($tag->type == 's'){
                return; // a Single Tag, it does not have content and ending tag
             }
-        $tag->tree = array();
-        while($this->lookahead->type != ListLexer::EOF && $this->lookahead->type != ListLexer::EOF_TYPE){
+            $tag->tree = array();
+            $static_content_s = $this->input->p;
+            $static_content_e = $this->input->p;
 
-            if($this->lookahead->type == ListLexer::TAG_START_OPENING){
-                $this->add_nodes_to_tree($tag->tree);
-            }elseif($this->lookahead->type == ListLexer::TAG_DOUBLE_END_OPENING){
-                $this->consume();
+            while($this->lookahead->type != ListLexer::EOF && $this->lookahead->type != ListLexer::EOF_TYPE){
+                if($this->lookahead->type == ListLexer::TAG_START_OPENING){ // finds a nested node
 
-                if($this->lookahead->type == ListLexer::NAME){
-                    if($this->lookahead->text == $tag->text){
-                        $this->consume();
-                        if($this->lookahead->type == ListLexer::TAG_DOUBLE_CLOSING){
-                            return ; // ending double tag successfully
-                        }
-                        $this->error_expecting("--->", $this->lookahead);
+                    if($static_content_s != $static_content_e){ //save static content
+                        $token_static_content = new Token("content",$this->input->getContent($static_content_s, $static_content_e));
+                        $static_content_s = $static_content_e;
+                        $tag->tree[] = $token_static_content;
                     }
-                    $this->error_expecting("<!---/".$tag->text. "--->", "<!---/".$this->lookahead->text. "--->");
-                }
-                $this->error_expecting($tag->text, $this->lookahead);
-            }            
-            $this->consume();
-        }
+                    
+                    $this->add_nodes_to_tree($tag->tree);
+                    $static_content_s = $this->input->p;
+                }elseif($this->lookahead->type == ListLexer::TAG_DOUBLE_END_OPENING){ //finds and ending tag
+                    list($e_l, $e_c) = $this->input->get_context();
+                    $this->consume();
 
-        $this->error(sprintf("Expecting '%s' for tag '%s' started at Line: %d, col: %d."
-            , "<!---/".$tag->text. "--->"
-            , $tag->text
-            , $tag->token->data['line']
-            , $tag->token->data['col']
-            ));
-    }
+                    if($this->lookahead->type == ListLexer::NAME){
+                        if($this->lookahead->text == $tag->text){
+                            list($e_l, $e_c) = $this->input->get_context();
+                            $this->consume();
+                            if($this->lookahead->type == ListLexer::TAG_DOUBLE_CLOSING){
+                                if($static_content_s != $static_content_e){ //save static content
+                                    $token_static_content = new Token("content",$this->input->getContent($static_content_s, $static_content_e));
+                                    $static_content_s = $static_content_e;
+                                    $tag->tree[] = $token_static_content;
+                                }
+                                return ; // ending double tag successfully
+                            }
+                            $this->error_expecting("--->", $this->lookahead, "", $e_l, $e_c);
+                        }
+                        $this->error_expecting("<!---/".$tag->text. "--->", "<!---/".$this->lookahead->text. "--->", "", $e_l, $e_c);
+                    }
+                    $this->error_expecting($tag->text, $this->lookahead, "", $e_l, $e_c);
+                }
+                $static_content_e = $this->input->p;
+                $this->consume();
+            }
+
+            $this->error(sprintf("Could not find a '%s' for tag '%s' Opened at Line: %d, col: %d."
+                , "<!---/".$tag->text. "--->"
+                , "<!---".$tag->text. "--->"
+                , $tag->token->data['line']
+                , $tag->token->data['col']
+                ));
+        }
     }
 
     /** <!--- is just opened, 
@@ -104,7 +127,6 @@ class ListParser extends Parser {
         }
         $tag->pos_end = $this->input->p - 1;
 
-        $this->consume();
 
     }
 
@@ -112,7 +134,7 @@ class ListParser extends Parser {
         $l = ($l)?: $this->input->line;
         $c = ($c)?: $this->input->col;
         echo "Expecting ".  $expecting . ", Given " . $given 
-            ." Line: " .   $this->input->line . " Col: ". $this->input->col. $extra_message;
+            ." Line: " .   $l . " Col: ". $c. $extra_message;
             ; 
         die;
     }
@@ -130,34 +152,6 @@ class ListParser extends Parser {
         }
     }
 
-
-
-    /** list : '[' elements ']' ; // match bracketed list */
-    public function rlist() {
-        $this->match(ListLexer::LBRACK);
-        $this->elements();
-        $this->match(ListLexer::RBRACK);
-    }
-    /** elements : element (',' element)* ; */
-    function elements() {
-        $this->element();
-        while ($this->lookahead->type == ListLexer::COMMA ) {
-            $this->match(ListLexer::COMMA);
-            $this->element();
-        }
-    }
-    /** element : name | list ; // element is name or nested list */
-    function element() {
-        if ($this->lookahead->type == ListLexer::NAME ) {
-            $this->match(ListLexer::NAME);
-        }
-        else if ($this->lookahead->type == ListLexer::LBRACK) {
-            $this->rlist();
-        }
-        else {
-            throw new Exception("Expecting name or list : Found "  . $this->lookahead);
-        }
-    }
 }
 
 ?>
