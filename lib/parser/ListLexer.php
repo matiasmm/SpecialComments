@@ -11,7 +11,7 @@ class ListLexer extends Lexer {
     const NAME      = 2;
     const COMMA     = 3;
     const COLON    = 4;
-    const RBRACK    = 5;
+    const EQUAL    = 5;
     const TAG_START_OPENING = 6; // <!---
     const TAG_DOUBLE_CLOSING= 7; // --->
     const TAG_DOUBLE_END_OPENING= 8; // <!---/
@@ -20,10 +20,18 @@ class ListLexer extends Lexer {
     const PHP_OPENING= 11;
     const PHP_CLOSING= 12;
     const DOUBLE_QUOTE= 13;
-    const SIMPLE_QUOTE= 13;
+    const SIMPLE_QUOTE= 14;
+    const TEMPLATE_ATTRIBUTE= 15;
+    const TEMPLATE_CONTENT_ATTRIBUTE= 16;
+    
+    const HTML_START_OPENING = 17; // <
+    const HTML_DOUBLE_CLOSING= 18; // >
+    const HTML_DOUBLE_END_OPENING= 19; // </
+    const HTML_SIMPLE_CLOSING= 20; //  />
+
     static $tokenNames = array("n/a", "<EOF>",
                                "NAME", "COMMA",
-                               "COLON", "RBRACK",
+                               "COLON", "EQUAL",
                                "TAG_START_OPENING",
                                "TAG_DOUBLE_CLOSING",
                                "TAG_DOUBLE_END_OPENING",
@@ -33,6 +41,12 @@ class ListLexer extends Lexer {
                                "PHP_CLOSING",
                                "DOUBLE_QUOTE",
                                "SIMPLE_QUOTE",
+                               "TEMPLATE_ATTRIBUTE",
+                               "TEMPLATE_CONTENT_ATTRIBUTE",
+                                "HTML_START_OPENING",
+                                "HTML_DOUBLE_CLOSING",
+                                "HTML_DOUBLE_END_OPENING",
+                                "HTML_SIMPLE_CLOSING",
                                 );
     
     public function getTokenName($x) {
@@ -109,7 +123,16 @@ class ListLexer extends Lexer {
                     elseif($token = $this->PHP_OPENING()){
                        return $token;
                     }
+                    elseif($token = $this->HTML_DOUBLE_END_OPENING()){
+                       return $token;
+                    }else{
+                        $this->consume();
+                        return new Token(self::HTML_START_OPENING, '<');
+                    }
+                break;
+                case '>':
                     $this->consume();
+                    return new Token(self::HTML_DOUBLE_CLOSING, '>');
                 break;
                 case '-':
                     if($token = $this->TAG_DOUBLE_CLOSING()){
@@ -121,6 +144,9 @@ class ListLexer extends Lexer {
                     if($token = $this->TAG_SIMPLE_CLOSING()){
                        return $token;
                     }
+                    elseif($token = $this->HTML_SIMPLE_CLOSING()){
+                       return $token;
+                    }
                     $this->consume();
                 break;
                 case ':':
@@ -130,6 +156,9 @@ class ListLexer extends Lexer {
                 case '"':
                     $this->consume();
                     return new Token(self::DOUBLE_QUOTE, '"');
+                case '=':
+                    $this->consume();
+                    return new Token(self::EQUAL, '=');
                 break;
                 case "'":
                     $this->consume();
@@ -142,7 +171,11 @@ class ListLexer extends Lexer {
                     $this->consume();
                 break;
                 case $this->isLETTER():
-                    if($token = $this->NAME()){
+                    if($token = $this->TEMPLATE_CONTENT_ATTRIBUTE()){
+                        return $token;
+                    }elseif($token = $this->TEMPLATE_ATTRIBUTE()){
+                        return $token;
+                    }elseif($token = $this->NAME()){
                        return $token;
                     }
                     $this->consume();
@@ -235,6 +268,84 @@ class ListLexer extends Lexer {
         ));
     }
 
+    /** tplcontent: **/
+    public function TEMPLATE_CONTENT_ATTRIBUTE(){
+        $ar = array('t', 'p', 'l', 'c','o', 'n', 't','e','n','t', ':');
+        $this->freeze();
+
+        foreach($ar as $actual_s){
+            if($actual_s !== $this->c){
+                $this->rollback();
+                return;
+            }
+            $this->consume();
+        }
+        return new Token(self::TEMPLATE_CONTENT_ATTRIBUTE, '', array(
+            'line' => $this->frozen['line'],
+            'col' => $this->frozen['col'],
+            'char' => $this->frozen['p'],
+        ));
+    }
+
+    /** tpl: **/
+    public function TEMPLATE_ATTRIBUTE(){
+        $ar = array('t', 'p', 'l', ':');
+        $this->freeze();
+
+        foreach($ar as $actual_s){
+            if($actual_s !== $this->c){
+                $this->rollback();
+                return;
+            }
+            $this->consume();
+        }
+        return new Token(self::TEMPLATE_ATTRIBUTE, '', array(
+            'line' => $this->frozen['line'],
+            'col' => $this->frozen['col'],
+            'char' => $this->frozen['p'],
+        ));
+    }
+
+
+    /** </ **/
+    public function HTML_DOUBLE_END_OPENING(){
+        $ar = array('<', '/');
+        $this->freeze();
+
+        foreach($ar as $actual_s){
+            if($actual_s !== $this->c){
+                $this->rollback();
+                return;
+            }
+            $this->consume();
+        }
+        return new Token(self::HTML_DOUBLE_END_OPENING, '', array(
+            'line' => $this->frozen['line'],
+            'col' => $this->frozen['col'],
+            'char' => $this->frozen['p'],
+        ));
+    }
+
+    /** /> **/
+    public function HTML_SIMPLE_CLOSING(){
+        $ar = array('/', '>');
+        $this->freeze();
+
+        foreach($ar as $actual_s){
+            if($actual_s !== $this->c){
+                $this->rollback();
+                return;
+            }
+            $this->consume();
+        }
+        return new Token(self::HTML_DOUBLE_END_OPENING, '', array(
+            'line' => $this->frozen['line'],
+            'col' => $this->frozen['col'],
+            'char' => $this->frozen['p'],
+        ));
+    }
+
+
 
     /** <? **/
     public function PHP_OPENING(){
@@ -289,17 +400,6 @@ class ListLexer extends Lexer {
     }
 
 
-    /*** TPL- *******/
-    public function TPL_ATTRIBUTE() {
-        $buf = '';
-        do {
-            $buf .= $this->c;
-            $this->consume();
-        } while ($this->isLETTER());
-
-        return new Token(self::NAME, $buf);
-    }
-
     /** WS : (' '|'\t'|'\n'|'\r')* ; // ignore any whitespace */
     public function WS() {
         while(ctype_space($this->c)) {
@@ -307,5 +407,3 @@ class ListLexer extends Lexer {
         }
     }
 }
-
-?>

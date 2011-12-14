@@ -3,12 +3,9 @@
 require_once('ListLexer.php');
 require_once('Token.php');
 
-$input = "
-asdffsaf
-<!--- matias: --->
-    <!--- mat /--->
-<!---/matias <? mat ?> --->
-";
+$input = '
+    <some_tag tpl-merge="matias"></table>
+';
 $lexer = new ListLexer($input);
 $token = $lexer->nextToken();
 

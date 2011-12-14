@@ -16,8 +16,12 @@ class ListParser extends Parser {
         
         foreach($tree as $b){
             printf("\n".$s."%s", trim($b->text));
-            if(isset($b->attributes))
-                    var_dump($b->attributes);
+            if(isset($b->attributes) && is_array($b->attributes) && count($b->attributes)){
+                    echo ".... Attributes: ";
+                    foreach($b->attributes as $name => $value){
+                        printf("%s: %s. ", $name, $value);
+                    }
+            }
             if(isset($b->tree)){
                 $this->show_tree($b->tree,$s."      ");
             }
@@ -25,16 +29,16 @@ class ListParser extends Parser {
     }
 
     public function parse(){
-
         while($this->lookahead->type != ListLexer::EOF_TYPE && $this->lookahead->type != ListLexer::EOF){
             $this->wait_for(ListLexer::TAG_START_OPENING);
-            $this->add_nodes_to_tree($this->tree);
+            $this->context_start_tag($this->tree);
         }
-
     }
 
-    public function add_nodes_to_tree(&$tree){
-        
+    /***
+     * <!--- just opened
+     */
+    public function context_start_tag(&$tree){
         if($this->lookahead->type == ListLexer::TAG_START_OPENING){
             $tree[] = $tag = new stdClass();
             $this->context_attributes($tag);
@@ -42,11 +46,18 @@ class ListParser extends Parser {
             if($tag->type == 's'){
                return; // a Single Tag, it does not have content and ending tag
             }
-            $tag->tree = array();
-            $static_content_s = $this->input->p;
-            $static_content_e = $this->input->p;
+            $this->context_double_node_content($tag);
+        }
+    }
 
-            while($this->lookahead->type != ListLexer::EOF && $this->lookahead->type != ListLexer::EOF_TYPE){
+    /***
+     * <!---a_double_node---->CONTEXT DOUBLE NODE CONTENT<!---/a_double_node--->
+     */
+    public function context_double_node_content($tag){
+        $tag->tree = array();
+        $static_content_s = $this->input->p;
+        $static_content_e = $this->input->p;
+        while($this->lookahead->type != ListLexer::EOF && $this->lookahead->type != ListLexer::EOF_TYPE){
                 if($this->lookahead->type == ListLexer::TAG_START_OPENING){ // finds a nested node
 
                     if($static_content_s != $static_content_e){ //save static content
@@ -54,9 +65,12 @@ class ListParser extends Parser {
                         $static_content_s = $static_content_e;
                         $tag->tree[] = $token_static_content;
                     }
-                    
-                    $this->add_nodes_to_tree($tag->tree);
+
+                    $this->context_start_tag($tag->tree);
                     $static_content_s = $this->input->p;
+
+                    $static_content_e = $this->input->p;
+                    $this->consume();
                 }elseif($this->lookahead->type == ListLexer::TAG_DOUBLE_END_OPENING){ //finds and ending tag
                     list($e_l, $e_c) = $this->input->get_context();
                     $this->consume();
@@ -78,9 +92,18 @@ class ListParser extends Parser {
                         $this->error_expecting("<!---/".$tag->text. "--->", "<!---/".$this->lookahead->text. "--->", "", $e_l, $e_c);
                     }
                     $this->error_expecting($tag->text, $this->lookahead, "", $e_l, $e_c);
+
+                    $static_content_e = $this->input->p;
+                    $this->consume();
+                }elseif($this->lookahead->type == ListLexer::HTML_START_OPENING){
+                    $this->context_html_tag();
+
+                    $static_content_e = $this->input->p;
+                }else{
+                    $static_content_e = $this->input->p;
+                    $this->consume();
                 }
-                $static_content_e = $this->input->p;
-                $this->consume();
+                
             }
 
             $this->error(sprintf("Could not find a '%s' for tag '%s' Opened at Line: %d, col: %d."
@@ -89,10 +112,42 @@ class ListParser extends Parser {
                 , $tag->token->data['line']
                 , $tag->token->data['col']
                 ));
-        }
     }
 
-    /** <!--- is just opened, 
+    /***
+     * < just found
+     */
+    public function context_html_tag(){
+        $html_attributes = array();
+        $html_special_attributes = array();
+        $html_special_attributes_with_content = array();
+
+        $errors = array();
+        $throw_errors = false;
+
+        $this->consume();
+        if($this->lookahead->type == ListLexer::NAME){
+            $this->consume();
+            
+                while($this->lookahead->type != ListLexer::HTML_SIMPLE_CLOSING
+                        && $this->lookahead->type != ListLexer::HTML_DOUBLE_CLOSING
+                        && $this->lookahead->type != ListLexer::EOF
+                        && $this->lookahead->type != ListLexer::EOF_TYPE){
+                    
+                    //Search for html attributes
+                    if($this->lookahead->type === ListLexer::TEMPLATE_ATTRIBUTE){
+                        $throw_errors = true;
+                    }elseif($this->lookahead->type === ListLexer::TEMPLATE_CONTENT_ATTRIBUTE){
+                        $throw_errors = true;
+                    }elseif($this->lookahead->type === ListLexer::NAME){
+                        
+                    }else{
+                        $this->consume();
+                    }
+                }
+    }
+
+    /** <!---TAG is just opened,
      * sets:
      *   name
      *   attributes: array
@@ -222,5 +277,3 @@ class ListParser extends Parser {
     }
 
 }
-
-?>
