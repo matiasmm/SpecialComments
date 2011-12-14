@@ -19,6 +19,8 @@ class ListLexer extends Lexer {
     const TPL_ATTRIBUTE= 10;
     const PHP_OPENING= 11;
     const PHP_CLOSING= 12;
+    const DOUBLE_QUOTE= 13;
+    const SIMPLE_QUOTE= 13;
     static $tokenNames = array("n/a", "<EOF>",
                                "NAME", "COMMA",
                                "COLON", "RBRACK",
@@ -29,6 +31,8 @@ class ListLexer extends Lexer {
                                "TPL_ATTRIBUTE",
                                "PHP_OPENING",
                                "PHP_CLOSING",
+                               "DOUBLE_QUOTE",
+                               "SIMPLE_QUOTE",
                                 );
     
     public function getTokenName($x) {
@@ -122,6 +126,14 @@ class ListLexer extends Lexer {
                 case ':':
                     $this->consume();
                     return new Token(self::COLON, ':');
+                break;
+                case '"':
+                    $this->consume();
+                    return new Token(self::DOUBLE_QUOTE, '"');
+                break;
+                case "'":
+                    $this->consume();
+                    return new Token(self::SIMPLE_QUOTE, "'");
                 break;
                 case '?':
                     if($token = $this->PHP_CLOSING()){
