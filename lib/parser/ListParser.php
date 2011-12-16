@@ -15,7 +15,7 @@ class ListParser extends Parser {
         $tree = ($s)? $tree : $this->tree;
         
         foreach($tree as $b){
-            printf("\n".$s."%s", trim($b->text));
+            printf("\n".$s."%s: %s", $b->type, trim($b->text));
             if(isset($b->attributes) && is_array($b->attributes) && count($b->attributes)){
                     echo ".... Attributes: ";
                     foreach($b->attributes as $name => $value){
@@ -72,12 +72,12 @@ class ListParser extends Parser {
                     $static_content_e = $this->input->p;
                     $this->consume();
                 }elseif($this->lookahead->type == ListLexer::TAG_DOUBLE_END_OPENING){ //finds and ending tag
-                    list($e_l, $e_c) = $this->input->get_context();
+                    list($e_l, $e_c) = $this->input->get_info_context();
                     $this->consume();
 
                     if($this->lookahead->type == ListLexer::NAME){
                         if($this->lookahead->text == $tag->text){
-                            list($e_l, $e_c) = $this->input->get_context();
+                            list($e_l, $e_c) = $this->input->get_info_context();
                             $this->consume();
                             if($this->lookahead->type == ListLexer::TAG_DOUBLE_CLOSING){
                                 if($static_content_s != $static_content_e){ //save static content
@@ -96,9 +96,50 @@ class ListParser extends Parser {
                     $static_content_e = $this->input->p;
                     $this->consume();
                 }elseif($this->lookahead->type == ListLexer::HTML_START_OPENING){
-                    $this->context_html_tag();
+                    $context = $this->input->getContext();
+                    $r = $this->context_html_tag(false);
+                    $this->input->setContext($context);
+                    if(1 || $r){
+                        $static_content_e = $this->input->p-1;
+                        list($tag_name, $html_attributes, $html_special_attributes, $html_special_attributes_with_content, $type) = $this->context_html_tag(true);
 
-                    $static_content_e = $this->input->p;
+                        //save static content
+                        if($static_content_s != $static_content_e){
+                            $tag->tree[] =  new Token("content",$this->input->getContent($static_content_s, $static_content_e));
+                        }
+
+                        if($type == 's'){
+                            $static_content_s = $static_content_e = $this->input->p;
+                            $tag->tree[] = new Token("special_html",$tag_name,
+                                    array($html_attributes,
+                                        'html_attributes'=>$html_attributes,
+                                        'html_special_attributes'=>$html_special_attributes,
+                                        'html_special_attributes_with_content'=>$html_special_attributes_with_content,
+                                        'type'=>$type
+                                        )
+                                    );
+                        }else{
+                            
+                            $static_content_s = $this->input->p;
+                            $static_content_e = $this->context_html_double_content($tag_name);
+                            
+                            $i_content = $this->input->getContent($static_content_s, $static_content_e); 
+                            $tag->tree[] = new Token("special_html",$tag_name,
+                                    array($html_attributes,
+                                        'html_attributes'=>$html_attributes,
+                                        'html_special_attributes'=>$html_special_attributes,
+                                        'html_special_attributes_with_content'=>$html_special_attributes_with_content,
+                                        'type'=>$type,
+                                        'content' => $i_content
+                                        )
+                                    );
+                            $static_content_s = $static_content_e = $this->input->p;
+                        }
+                    }else{
+                        $this->consume();
+                    }
+
+                    $static_content_e = $this->input->p; 
                 }else{
                     $static_content_e = $this->input->p;
                     $this->consume();
@@ -114,19 +155,61 @@ class ListParser extends Parser {
                 ));
     }
 
+
+    /***
+     * <html_double>CONTEXT</html_double>
+     */
+    function context_html_double_content($tag_name){
+        $return = $this->input->p;
+        while($this->lookahead->type != ListLexer::EOF && $this->lookahead->type != ListLexer::EOF_TYPE){
+            if($this->lookahead->type == ListLexer::HTML_DOUBLE_END_OPENING){
+                $this->consume();
+
+                if($this->lookahead->text === $tag_name){
+                    $this->consume();
+                    if($this->lookahead->type === ListLexer::HTML_DOUBLE_CLOSING){
+                        return $return;
+                    }else $this->error_expecting (">", $this->lookahead);
+                }else  $this->error_expecting ($tag_name, $this->lookahead);
+            }elseif($this->lookahead->type == ListLexer::HTML_START_OPENING){
+                $this->consume();
+                $o_tag_name = ($this->lookahead->type == ListLexer::NAME)? $this->lookahead->text: $this->error_expecting("a tag name", $this->lookahead);
+                $context = $this->input->getContext();
+                $this->consume();
+                $this->wait_for(ListLexer::HTML_SIMPLE_CLOSING);
+
+                if(ListLexer::HTML_SIMPLE_CLOSING != $this->lookahead->type){
+                    $this->input->setContext($context);
+                    $this->consume();
+                    $this->wait_for(ListLexer::HTML_DOUBLE_CLOSING);
+                    if(ListLexer::HTML_DOUBLE_CLOSING == $this->lookahead->type){
+                        $this->context_html_double_content($o_tag_name);
+                    }else{ //EOF
+                        $this->error_expecting("end of html tag '$o_tag_name'", $this->lookahead);
+                    }
+                }
+            }
+            $return = $this->input->p;
+            $this->consume();
+        }
+        $this->error_expecting("end of html tag $o_tag_name", $this->lookahead); //eof
+    }
+
+
     /***
      * < just found
      */
-    public function context_html_tag(){
+    public function context_html_tag($die_on_error){
         $html_attributes = array();
         $html_special_attributes = array();
         $html_special_attributes_with_content = array();
 
-        $errors = array();
-        $throw_errors = false;
-
+        $type = 'd';
+        $content = '';
         $this->consume();
+
         if($this->lookahead->type == ListLexer::NAME){
+            $tag_name = $this->lookahead->text;
             $this->consume();
             
                 while($this->lookahead->type != ListLexer::HTML_SIMPLE_CLOSING
@@ -135,16 +218,91 @@ class ListParser extends Parser {
                         && $this->lookahead->type != ListLexer::EOF_TYPE){
                     
                     //Search for html attributes
-                    if($this->lookahead->type === ListLexer::TEMPLATE_ATTRIBUTE){
-                        $throw_errors = true;
-                    }elseif($this->lookahead->type === ListLexer::TEMPLATE_CONTENT_ATTRIBUTE){
-                        $throw_errors = true;
-                    }elseif($this->lookahead->type === ListLexer::NAME){
+                    if($this->lookahead->type === ListLexer::TEMPLATE_ATTRIBUTE){ //finds tpl:
+                        if($die_on_error === false){
+                            return true;
+                        }
+                        $this->consume();
+                        $attr_token->text = $this->lookahead->type;
+                        if($this->lookahead->type !== ListLexer::NAME){
+                            $this->error_expecting("attribute name", $this->lookahead);
+                        }
+
+
+                    }elseif($this->lookahead->type === ListLexer::TEMPLATE_CONTENT_ATTRIBUTE){ //finds tplcontent:
+                        $type = 'd';
+                        if($die_on_error === false){
+                            return true;
+                        }
+
+
+                    }elseif($this->lookahead->type === ListLexer::NAME){// finds normal attribute
+                        
+                        $attr_token = $this->lookahead;
+                        $attr_token->data['l'] = $this->input->line;
+                        $attr_token->data['c'] = $this->input->col;
+                        $this->consume();
+                        list($e_l, $e_c) = $this->input->get_info_context();
+                        if($this->lookahead->type !== ListLexer::EQUAL){
+                           if($die_on_error)
+                               $this->error_expecting("=", $this->lookahead, "", $attr_token->data['l'], $attr_token->data['c']);
+                           else continue;
+                        }
+                        
+                        $attr_value = $this->get_html_attribute_value($die_on_error);
+                        if($attr_value === null){
+                            continue;
+                        }
+                        if($die_on_error && array_key_exists($attr_token->text, $html_attributes)){
+                            $this->error(sprintf("Duplicated attribute '%s'. Line: %d Col: %d.",
+                                    $attr_token->text, $attr_token->data['l'], $attr_token->data['c']));
+                        }
+                        $html_attributes[$attr_token->text] = $attr_value;
                         
                     }else{
                         $this->consume();
                     }
                 }
+
+
+                return array($tag_name, $html_attributes, $html_special_attributes, $html_special_attributes_with_content, $type);
+        }
+    }
+
+    /*** = just found ***/
+    function get_html_attribute_value($die_on_error){
+        $this->consume();
+        $start_value = $this->input->p;
+        if($this->lookahead->type == ListLexer::PHP_OPENING){
+            $this->consume();
+            $this->wait_for(ListLexer::PHP_CLOSING);
+            if($this->lookahead->type != ListLexer::PHP_CLOSING){
+                if($die_on_error)
+                    $this->error_expecting('?>', $this->lookahead);
+                else return null;
+            }
+            return $this->input->getContent($start_value-2, $this->input->p);
+        }
+        elseif($this->lookahead->type == ListLexer::DOUBLE_QUOTE){
+            $this->consume();
+            $this->wait_for(ListLexer::DOUBLE_QUOTE);
+            if($this->lookahead->type != ListLexer::DOUBLE_QUOTE){
+                if($die_on_error) 
+                    $this->error_expecting('"', $this->lookahead);
+                else return null;
+            }
+            return $this->input->getContent($start_value, $this->input->p -1);
+        }
+        elseif($this->lookahead->type == ListLexer::SIMPLE_QUOTE){
+            $this->consume();
+            $this->wait_for(ListLexer::SIMPLE_QUOTE);
+            if($this->lookahead->type != ListLexer::SIMPLE_QUOTE){
+                if($die_on_error)
+                    $this->error_expecting("'", $this->lookahead);
+                else return null;
+            }
+            return $this->input->getContent($start_value, $this->input->p -1);
+        }
     }
 
     /** <!---TAG is just opened,

@@ -35,17 +35,6 @@ class TemplateController{
 		$out = $this->checkPhpSyntax($output_dir);
 		echo $out;
 		
-		echo "
-********************************************************************************************************
-Por favor, asegurese que todos sus phtmls sean facilmente visibles al abrirlos con un navegador.
-Los .phtml se deben poder editar con facilidad por un diseñador y no se deben ver etiquetas php.
-
-
-http://aldeatour.local/templates/invierno/index.php #reemplace aldeatour.local por el nombre de su host
-********************************************************************************************************
-		
-"          ;
-		
 		return true;
 	}
 	

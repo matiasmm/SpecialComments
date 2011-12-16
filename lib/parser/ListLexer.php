@@ -53,7 +53,7 @@ class ListLexer extends Lexer {
         return ListLexer::$tokenNames[$x];
     }
 
-    public function get_context(){
+    public function get_info_context(){
         return array($this->line, $this->col, $this->p);
     }
 
@@ -90,8 +90,24 @@ class ListLexer extends Lexer {
         return $r;
     }
 
-    private $frozen = array();
 
+    function getContext(){
+        return array(
+            'c' => $this->c,
+            'p' => $this->p,
+            'line' => $this->line,
+            'col' => $this->col
+        );
+    }
+
+    function setContext($context){
+        $this->c = $context['c'];
+        $this->p = $context['p'];
+        $this->line = $context['line'];
+        $this->col = $context['col'];
+    }
+
+    private $frozen = array();
     function freeze(){
         $this->frozen['c'] = $this->c;
         $this->frozen['p'] = $this->p;
@@ -338,7 +354,7 @@ class ListLexer extends Lexer {
             }
             $this->consume();
         }
-        return new Token(self::HTML_DOUBLE_END_OPENING, '', array(
+        return new Token(self::HTML_SIMPLE_CLOSING, '', array(
             'line' => $this->frozen['line'],
             'col' => $this->frozen['col'],
             'char' => $this->frozen['p'],

@@ -6,11 +6,13 @@ require_once('ListParser.php');
 
 
 $input = '    
-   <!---class: Car ---> 
-     <!---method /--->
-     <input matias="montenegro" tpl:use-matias="" >
-   <!---/class---> 
-    ';
+   <!---class: Car --->ma 
+   fsdaasfd<hhh>sdsa <aaa  saffdsa />
+   
+   <matias></matias>
+   </hhh>ffff
+     <!---/class---> 
+m    ';
 $lexer = new ListLexer($input);
 $parser = new ListParser($lexer);
 $parser->parse(); // begin parsing at rule list
