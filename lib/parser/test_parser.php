@@ -11,6 +11,7 @@ $input = '
    
    <matias></matias>
    </hhh>ffff
+   <montenegro>matias</>
      <!---/class---> 
 m    ';
 $lexer = new ListLexer($input);

@@ -164,13 +164,13 @@ class ListParser extends Parser {
         while($this->lookahead->type != ListLexer::EOF && $this->lookahead->type != ListLexer::EOF_TYPE){
             if($this->lookahead->type == ListLexer::HTML_DOUBLE_END_OPENING){
                 $this->consume();
-
+var_dump($this->input); die;
                 if($this->lookahead->text === $tag_name){
                     $this->consume();
                     if($this->lookahead->type === ListLexer::HTML_DOUBLE_CLOSING){
                         return $return;
-                    }else $this->error_expecting (">", $this->lookahead);
-                }else  $this->error_expecting ($tag_name, $this->lookahead);
+                    }else $this->error_expecting (sprintf("'%s', to close tag '</%s>'", ">", $tag_name), $this->lookahead);
+                }else  $this->error_expecting (sprintf("'%s', to close tag '</%s>'", $tag_name, $tag_name), $this->lookahead, "", $this->input->line, $this->input->col);
             }elseif($this->lookahead->type == ListLexer::HTML_START_OPENING){
                 $this->consume();
                 $o_tag_name = ($this->lookahead->type == ListLexer::NAME)? $this->lookahead->text: $this->error_expecting("a tag name", $this->lookahead);
