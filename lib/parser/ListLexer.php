@@ -29,6 +29,11 @@ class ListLexer extends Lexer {
     const HTML_DOUBLE_END_OPENING= 19; // </
     const HTML_SIMPLE_CLOSING= 20; //  />
 
+    const MINUS= 21; //  -
+
+    const HTML_COMMENT_OPENING= 22; //  <!--
+    const HTML_COMMENT_CLOSING= 23; //  -->
+    
     static $tokenNames = array("n/a", "<EOF>",
                                "NAME", "COMMA",
                                "COLON", "EQUAL",
@@ -47,6 +52,9 @@ class ListLexer extends Lexer {
                                 "HTML_DOUBLE_CLOSING",
                                 "HTML_DOUBLE_END_OPENING",
                                 "HTML_SIMPLE_CLOSING",
+                                "MINUS",
+                                "HTML_COMMENT_OPENING",
+                                "HTML_COMMENT_CLOSING",
                                 );
     
     public function getTokenName($x) {
@@ -150,12 +158,6 @@ class ListLexer extends Lexer {
                     $this->consume();
                     return new Token(self::HTML_DOUBLE_CLOSING, '>');
                 break;
-                case '-':
-                    if($token = $this->TAG_DOUBLE_CLOSING()){
-                       return $token;
-                    }
-                    $this->consume();
-                break;
                 case '/':
                     if($token = $this->TAG_SIMPLE_CLOSING()){
                        return $token;
@@ -179,6 +181,16 @@ class ListLexer extends Lexer {
                 case "'":
                     $this->consume();
                     return new Token(self::SIMPLE_QUOTE, "'");
+                break;
+                case "-":
+                    if($token = $this->TAG_DOUBLE_CLOSING()){
+                       return $token;
+                    }else{
+                        $this->consume();
+                        return new Token(self::MINUS, "-");
+                    }
+                    $this->consume();
+
                 break;
                 case '?':
                     if($token = $this->PHP_CLOSING()){
