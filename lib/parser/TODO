@@ -1,0 +1,6 @@
+Some bugs to fix:
+
+1) Comments inside a html tag
+
+html> <a href="#"<!--this comment produces an error-->></a>
+produces> Expecting =, Given <'comment',NAME> Line: 1 Col: 27
