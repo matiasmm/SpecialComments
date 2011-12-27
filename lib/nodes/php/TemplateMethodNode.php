@@ -11,7 +11,7 @@ class TemplateMethodNode extends TemplateBlockNode{
 			$pars = $this->getParametersString(true);
 			
 			return sprintf(<<<EOF
-	TemplateClassNode_ini public static function $name($pars){\n  ob_start();\n  ?>%s<?php \n  return ob_get_clean(); \n}\nTemplateClassNode_end
+	public function $name($pars){\n  ob_start();\n  ?>%s<?php \n  return ob_get_clean(); \n}\n
 
 EOF
 	, trim(TemplateAttributeParser::getInstance()->render($this->content)));		
@@ -27,6 +27,6 @@ EOF
 	
 	function render()
 	{
-		return;
+		return $this->nestedRender();
 	}
 }

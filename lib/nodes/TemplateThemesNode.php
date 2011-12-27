@@ -4,12 +4,10 @@
 		
 		protected $allowed_attributes = array("themes");
 		protected $mandatory_attributes = array("themes");
-		
+
 		function render(){
-			
 			$array= (array)split(',',$this->attributes['themes']);
-			
-			TemplateThemeController::getInstance()->setThemeArray($array);
+
 			return "";
 		}
 		
