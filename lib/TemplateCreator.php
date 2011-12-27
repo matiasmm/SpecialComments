@@ -22,47 +22,10 @@ class TemplateCreator{
 		$this->getTemplateFiles($dir);
                 foreach($this->t_files as $file){
                     $this->createTree($file, $output_dir);
-                    echo " 4/6 Checking\n";
-                    $this->verify();
-                    echo " 5/6 Creating files\n";
-                    $this->exportToFiles($output_dir);
-                    echo " 6/6 Checking syntax of TemplateHelper.php with php -l\n";
-                    $out = $this->checkPhpSyntax($output_dir);
-                    echo $out;
                 }
 		return true;
 	}
 
-	
-	protected function exportToFiles($output_dir){
-		if(!file_exists($output_dir)){
-			throw new Exception("The output directory doesn't exist.");
-		}
-		
-		
-		$g = $output_dir . '/generated-helpers';
-		
-		foreach($this->output as $file => $arr){
-			foreach($arr['themes'] as $t){
-				$this->generated_files[] = $name = $this->getOutputNameFile($g, $file, $t);
-				TemplateThemeController::getInstance()->setThemeArray();
-				
-				$out_f = '';
-				foreach($arr as $ik=>$i){
-					if(is_numeric($ik)){
-						$this->single_output .= $i["n"]->renderCall('generated-helpers',basename($name), array('theme'=> $t));
-						$out_f .= $i["string"];
-					}
-				}
-				
-				file_put_contents($name, $out_f);
-			}
-		}
-		file_put_contents($output_dir . '/' . self::$name_helper_file , $this->single_output);
-	}
-	
-	
-	
 	protected function emptyOutputdir($dir_p){
                 $output_dir = realpath($dir_p);
                 if($output_dir === false){
@@ -106,14 +69,7 @@ class TemplateCreator{
 	
 	
 	
-	protected function verify(){
-		foreach($this->nodes as $n){
-			TemplateParserContext::get()->setFile($n->getInfo());
-			if($n instanceof TemplateNodeVerifyWithContext){
-				$n->check($this->nodes);
-			}
-		}
-	}
+	
 	
 	protected function createTree($file, $output_dir){
             $lexer = new ListLexer(file_get_contents($file));
@@ -126,13 +82,16 @@ class TemplateCreator{
             //render_to_files
             $base = str_replace(self::$file_subfix, '',basename($file));
             foreach($fn->themes as $theme){
-                $file_o = sprintf('%s/generated-helpers/%s.%s.php',$output_dir, $base, $theme);
+                $file_o = sprintf('%sgenerated-helpers/%s.%s.php',$output_dir, $base, $theme);
                 file_put_contents($file_o, $fn->render());
+                echo shell_exec("php -l ". $file_o);
             }
             
             if(empty($fn->themes)){
-                $file_o = sprintf('%s/generated-helpers/%s.php',$output_dir, $base);
+                $file_o = sprintf('%sgenerated-helpers/%s.php',$output_dir, $base);
                 file_put_contents($file_o, $fn->render());
+                echo shell_exec("php -l ". $file_o);
+
             }
 
             
@@ -171,18 +130,5 @@ class TemplateCreator{
 		}
 		
 	}
-	
-	private function checkPhpSyntax($output_dir)
-	{
-		$out = shell_exec("php -l ".$output_dir.'/'.self::$name_helper_file);
-		/*
-		foreach($this->generated_files as $file){
-			@chmod($file, 0777); 
-			$out .= shell_exec($file);	
-		}*/
-		
-		return $out;	
-	}
-	
 	
 }

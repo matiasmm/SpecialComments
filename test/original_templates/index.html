@@ -29,7 +29,7 @@ Released   : 20111121
 	<div id="header-wrapper">
 		<div id="header">
 			<div id="logo" tpl:replace-id="mmm" tplcontent:replace="Lorem Ipsum">
-				<h1>dzfsa</h1>
+                            
 			</div>
 		</div>
 	</div>
@@ -96,7 +96,8 @@ Released   : 20111121
 							</ul>
 						</li>
 						<li>
-							<h2>Blogroll</h2>
+                                                    <!---block: list_of_items       parameters: $title--->
+                                                        <h2 tplcontent:replace="<?php echo $title ?>">Blogroll</h2>
 							<ul>
 								<li><a href="#">Aliquam libero</a></li>
 								<li><a href="#">Consectetuer adipiscing elit</a></li>
@@ -105,6 +106,7 @@ Released   : 20111121
 								<li><a href="#">Urnanet non molestie semper</a></li>
 								<li><a href="#">Proin gravida orci porttitor</a></li>
 							</ul>
+                                                    <!---/block--->
 						</li>
 						<li>
 							<h2>Archives</h2>
@@ -126,10 +128,12 @@ Released   : 20111121
 	</div>
 	<!-- end #page -->
 </div>
-<div id="footer">
-	<p>Copyright (c) 2011 Sitename.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/"> CSS Templates</a>.</p>
-</div>
-<!-- end #footer -->
 <!---/class--->
+<!---block: footer    parameters: $url--->
+    <div id="footer">
+            <p>Copyright (c) 2011 Sitename.com. All rights reserved. Design by <a tpl:replace-href="<?php echo $url?>" href="http://www.freecsstemplates.org/"> CSS Templates</a>.</p>
+    </div>
+    <!-- end #footer -->
+<!---/block--->
 </body>
 </html>

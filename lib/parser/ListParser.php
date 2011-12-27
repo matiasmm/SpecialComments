@@ -182,17 +182,19 @@ class ListParser extends Parser {
                 $o_tag_name = ($this->lookahead->type == ListLexer::NAME)? $this->lookahead->text: $this->error_expecting("a tag name", $this->lookahead);
                 $context = $this->input->getContext();
                 $this->consume();
-                $this->wait_for(ListLexer::HTML_SIMPLE_CLOSING);
 
-                if(ListLexer::HTML_SIMPLE_CLOSING != $this->lookahead->type){
-                    $this->input->setContext($context);
+                while($this->lookahead->type != ListLexer::HTML_SIMPLE_CLOSING 
+                        && $this->lookahead->type != ListLexer::HTML_DOUBLE_CLOSING
+                        && $this->lookahead->type != ListLexer::EOF
+                        && $this->lookahead->type != ListLexer::EOF_TYPE){
                     $this->consume();
-                    $this->wait_for(ListLexer::HTML_DOUBLE_CLOSING);
-                    if(ListLexer::HTML_DOUBLE_CLOSING == $this->lookahead->type){
+                }
+
+                if(ListLexer::HTML_SIMPLE_CLOSING == $this->lookahead->type){
+                }elseif(ListLexer::HTML_DOUBLE_CLOSING == $this->lookahead->type){
                         $this->context_html_double_content($o_tag_name);
-                    }else{ //EOF
+                }else{ //EOF
                         $this->error_expecting("end of html tag '$o_tag_name'", $this->lookahead);
-                    }
                 }
             }
             $return = $this->input->p;

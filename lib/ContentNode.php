@@ -17,6 +17,6 @@ class ContentNode extends TemplateBaseNode{
     }
 
     public function  nestedRender() {
-        ;
+       return $this->content;
     }
 }

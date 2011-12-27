@@ -13,7 +13,7 @@ abstract class TemplateDoubleNode extends TemplateBaseNode{
         }
 
         protected function concatContent(TemplateNode $content_node){
-            $this->content .= $content_node->render();
+            $this->content .= $content_node->nestedRender();
         }
 
         function buildContent(){
@@ -62,12 +62,24 @@ abstract class TemplateDoubleNode extends TemplateBaseNode{
                         if($b->data['type'] == 's'){
                             $r .=">";
 
-                            $b = new stdClass();
-                            $b->text  = $r;
-                            $o = new ContentNode($b);
+                            $bc = new stdClass();
+                            $bc->text  = $r;
+                            $o = new ContentNode($bc);
                             $this->concatContent($o);
                         }else{
-                            //var_dump($b); die;
+                            $r .=">";
+
+
+                            foreach($b->data['html_special_attributes_with_content'] as $name => $value_source){
+                                $c = sprintf("Template%sAttribute", ucfirst($name));
+                                $o = new $c;
+                                $b->data['content'] = $o->render($value_source, $b->data['content']);
+                            }
+
+                            $bc = new stdClass();
+                            $bc->text  = $r. $b->data['content'] . sprintf("</%s>",$b->text);
+                            $o = new ContentNode($bc);
+                            $this->concatContent($o);
                         }
                     break;
                 }

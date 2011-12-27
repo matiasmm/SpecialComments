@@ -25,13 +25,16 @@ Is like a template engine, but some differences are:
   # This library works when you call it with a command. It's not meant for being executed during your website execution.
  
 
+To achieve this, this library provides 2 things: Nodes and Attributes.
+See examples of both above.
+
 Examples
 ========
 
 layout.html
-<head>....</head>
-<body>
-<!---class: Layout --->
+  <head>....</head>
+  <body>
+  <!---class: Layout --->
 	<!---method: logo   parameters: $base_path --->
 		<img src="images/logo.gif" tpl:use-src="<?php echo $base_path . '{file}'  ?>" alt="Logo" />
 	<!---/method --->
@@ -56,12 +59,68 @@ layout.html
 		<!---/skip--->
         <!---/method--->
 
-<!---/class--->
-</body>
+  <!---/class--->
+  </body>
 
+The great thing about the template above, is that you can open it in any browser after applying these special comments and is not going to break. So is easy to handle by designers.
+For you (a developer), you have a lot of html you don't care, but you are going to select only the parts you need.
 
 
 === Nodes ===
+Nodes are HTML comments that look something like this: <!---NODE_NAME---> <!---/NODE_NAME--->
+or <!---NODE_NAME/--->
+
+  - Block
+  - Class
+  - Method
+  - Themes
+
+Block
+-----
+Layout.html
+  <body>
+    Lorem Ipsum
+
+    <!---block: hello parameters: $name--->
+        <div>
+            <span> Hello <strong tplcontent:replace="<?php echo $name?>">Mr Simpson</b> </strong>
+        </div>    
+    <!---/block--->
+
+  </body>
+Output:
+  With the ouput you can do this:
+    echo hello("Homer"); 
+    //returns <span> Hello <strong>Homer</strong></span>
+
+
+Class
+----
+Layout.html
+  <body>
+    <!---class: Layout ---->
+
+        <!---method: header--->
+            <div class= "header">Lorem Ipsum</div>
+        <!---/method--->       
+
+               <a>Text we don't use.</a>
+
+        <!---method: body--->
+            <div class= "content">A lot of html</div>
+        <!---/method--->
+    <!---/class--->
+
+  </body>
+
+Output:
+With the output you can do this:
+
+  $o = new Layout();
+  echo $o->body(); 
+  //will print <div class= "content">A lot of html</div>
+
+ 
 
 Themes
 ------
@@ -71,3 +130,30 @@ Themes
 
 Put this at the begining of a template file to indicate, the generated output belongs to a theme.
 It's going to create a different file for each theme.
+
+
+Attributes
+==========
+Are special HTML attributes that look like this:
+  <div tpl:COMMAND-existingAttribute="VALUE" existingAttribute="lorem ipsum"></div> 
+or
+  <div tplcontent:COMMAND="VALUE">Lorem Ipsum</div> 
+
+
+
+Replace
+-------
+test.html
+  <!---block: test parameters: $url --->
+     <a tpl:replace-href="<?php echo $url ?>" href="http://google.com">Go to some url</a>
+  <!---/block--->
+
+output:
+    <a href="<?php echo $url ?>">Go to some url</a>
+
+test.html
+  <!---block: test parameters: $name --->
+    <div tplcontent:replace="<?php echo $name ?>">Mr. Simpson</div>
+  <!---/block--->
+output:
+   <div><?php echo $name ?></div>
