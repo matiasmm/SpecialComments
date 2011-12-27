@@ -61,3 +61,13 @@ layout.html
 
 
 
+=== Nodes ===
+
+Themes
+------
+
+<!---themes: winter /--->
+<!---themes: winter, summer, spring, fall /--->
+
+Put this at the begining of a template file to indicate, the generated output belongs to a theme.
+It's going to create a different file for each theme.

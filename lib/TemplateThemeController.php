@@ -3,13 +3,13 @@
 class TemplateThemeController{
 	
 	static private $o = null;
-	private $default_theme = 'verano';
+	private $default_theme = 'summer';
 	
-	private $actual_theme_set = array();
-	private $actual_theme;
+	private $current_theme_set = array();
+	private $current_theme;
 	
 	private function __construct(){
-                $this->actual_theme = sfConfig::get('sf_theme', 'verano');
+                $this->current_theme = 'none';
 		return $this;	
 	}	
 	
@@ -22,8 +22,8 @@ class TemplateThemeController{
 	}
 	
 	function getThemeArray(){
-		if(count($this->actual_theme_set)){
-			$r = $this->actual_theme_set;
+		if(count($this->current_theme_set)){
+			$r = $this->current_theme_set;
 		}else{
 			$r = (array)'*';
 		}
@@ -31,11 +31,11 @@ class TemplateThemeController{
 	}
 	
 	function setThemeArray($ar = array()){
-		$this->actual_theme_set = $ar;
+		$this->current_theme_set = $ar;
 	}
 	
 	function getActualTheme(){
-		return $this->actual_theme;
+		return $this->current_theme;
 	}
 	
 	function loadClass($className){

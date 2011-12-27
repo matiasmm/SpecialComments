@@ -59,7 +59,6 @@ class ListParser extends Parser {
         $static_content_e = $this->input->p;
         while($this->lookahead->type != ListLexer::EOF && $this->lookahead->type != ListLexer::EOF_TYPE){
                 if($this->lookahead->type == ListLexer::TAG_START_OPENING){ // finds a nested node
-
                     if($static_content_s != $static_content_e){ //save static content
                         $token_static_content = new Token("content",$this->input->getContent($static_content_s, $static_content_e));
                         $static_content_s = $static_content_e;
@@ -268,7 +267,7 @@ class ListParser extends Parser {
                         }
 
                         //tpl:something-something=(THIS)
-                        $attr_value = $this->get_html_attribute_value(true); 
+                        $attr_value = $this->get_html_attribute_value(true);
 
 
 
@@ -276,7 +275,7 @@ class ListParser extends Parser {
                             $this->error(sprintf("Duplicated attribute modifier '%s'. Line: %d Col: %d.",
                                     $attr_modif_token->text, $attr_modif_token->data['l'], $attr_modif_token->data['c']));
                         }
-                        $html_special_attributes[$attr_node_token->text] = array('modif' =>$attr_modif_token, 'name' =>$attr_node_token);
+                        $html_special_attributes[$attr_node_token->text] = array('modif' =>$attr_modif_token, 'name' =>$attr_node_token, 'value_source' => $attr_value);
                     }elseif($this->lookahead->type === ListLexer::TEMPLATE_CONTENT_ATTRIBUTE){ //finds tplcontent:
                         $type = 'd';
                         if($die_on_error === false){
@@ -338,7 +337,9 @@ class ListParser extends Parser {
                     $this->consume();
                 }
 
-
+                if(empty($html_special_attributes) && empty($html_special_attributes_with_content))
+                    return false;
+                
                 return array($tag_name, $html_attributes, $html_special_attributes, $html_special_attributes_with_content, $type);
         }
     }

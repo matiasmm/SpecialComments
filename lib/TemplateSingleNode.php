@@ -4,7 +4,9 @@
 		
 		
 		final function __construct($attributes){
-			$this->attributes = $attributes;
+			foreach($attributes as $k=>$attr){
+                            $this->attributes[$k] = trim($attr);
+                        }
 		}
 		
 		
