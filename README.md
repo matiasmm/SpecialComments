@@ -67,7 +67,8 @@ The great thing about the template above, is that you can open it in any browser
 For you (a developer), you have a lot of html you don't care, but you are going to select only the parts you need.
 
 
-=== Nodes ===
+Nodes
+=====
 Nodes are HTML comments that look something like this: <!---NODE_NAME---> <!---/NODE_NAME--->
 or <!---NODE_NAME/--->
 
@@ -76,8 +77,8 @@ or <!---NODE_NAME/--->
   - Method
   - Themes
 
-Block
------
+Node :: Block
+-------------
 Layout.html
 
     <body>
@@ -97,8 +98,8 @@ Output:
     //returns <span> Hello <strong>Homer</strong></span>
 
 
-Class
-----
+NODE :: Class
+-------------
 Layout.html
 
     <body>
@@ -126,8 +127,8 @@ With the output you can do this:
 
  
 
-Themes
-------
+NODE :: Themes
+---------------
 
     <!---themes: winter /--->
     <!---themes: winter, summer, spring, fall /--->
@@ -148,8 +149,8 @@ or
 
 
 
-Replace
--------
+Attribute :: Replace
+-------------------
 test.html
 
     <!---block: test parameters: $url --->
