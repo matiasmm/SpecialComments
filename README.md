@@ -32,6 +32,7 @@ Examples
 ========
 
 layout.html
+
   <head>....</head>
   <body>
   <!---class: Layout --->
@@ -78,6 +79,7 @@ or <!---NODE_NAME/--->
 Block
 -----
 Layout.html
+
   <body>
     Lorem Ipsum
 
@@ -97,6 +99,7 @@ Output:
 Class
 ----
 Layout.html
+
   <body>
     <!---class: Layout ---->
 
@@ -135,8 +138,11 @@ It's going to create a different file for each theme.
 Attributes
 ==========
 Are special HTML attributes that look like this:
+
   <div tpl:COMMAND-existingAttribute="VALUE" existingAttribute="lorem ipsum"></div> 
+
 or
+
   <div tplcontent:COMMAND="VALUE">Lorem Ipsum</div> 
 
 
@@ -144,6 +150,7 @@ or
 Replace
 -------
 test.html
+
   <!---block: test parameters: $url --->
      <a tpl:replace-href="<?php echo $url ?>" href="http://google.com">Go to some url</a>
   <!---/block--->
@@ -152,6 +159,7 @@ output:
     <a href="<?php echo $url ?>">Go to some url</a>
 
 test.html
+
   <!---block: test parameters: $name --->
     <div tplcontent:replace="<?php echo $name ?>">Mr. Simpson</div>
   <!---/block--->
