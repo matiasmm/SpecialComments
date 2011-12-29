@@ -1,31 +1,33 @@
-This is under development, don't expect it to work yet.
-
 This is the problem it tries to solve:
 ======================================
 
 Supouse you are a developer who works in a team with a designer.
 
 Your designer, gives you a set of pure HTML template files like:
-  # layout.html: containing just header, footer, menu, and a lorem ipsum content.
-  # text_fonts.html: Where you have different text styles to use around.
-  # icons.html: A full html with icons, maybe with a description telling you where to use them.
-  # menues.html. Diferent menues.
 
-So, you have to break them, use the parts you need, and convert them into php peaces of code.
+  * layout.html: containing just header, footer, menu, and a lorem ipsum content.
+  * text_fonts.html: Where you have different text styles to use around.
+  * icons.html: A full html with icons, maybe with a description telling you where to use them.
+  * menues.html. Diferent menues.
 
-## The idea here is, having these templates prepared in this way, add some html special comments <!--- special tag --->, to retrieve the just parts we are going to use and convert them into functions. ##
+These files have a lot of things you want to use, but some other parts you don't care, like, *Lorem Ipsum* text, test images, test urls,etc.
 
-That is the main problem this is meant to solve: You have a whole template, and you want to use some parts leaving the templates visually untouched.
+So, you have to break them, use the parts you need, and convert them into php peaces of code to use them.
+
+#### The idea here is, having these templates prepared in this way, add some html special comments \<!--- special tag --->, to retrieve the just parts we are going to use and convert them into functions. ####
+
+That is the main problem it's meant to solve: You have a whole template, and you want to use some parts leaving the templates visually untouched.
 
 Is like a template engine, but some differences are:
-  # We don't break original templates, but we add them comments. The template remains visually untouched.
-  # Is just applicable for this methodology. You have a whole template, and you want to use some parts.
-  # Is not forbidden to use php, or whatever in your templates. Even you can use other template engine with it if you want.
-  # In our code, we don't use html at all: we use, functions, static methods or anything generated with this library.
-  # This library works when you call it with a command. It's not meant for being executed during your website execution.
+
+  1. We don't break original templates, but we add them comments. The template remains visually untouched.
+   Is just applicable for this methodology. You have a whole template, and you want to use some parts.
+  1. Is not forbidden to use php, or whatever in your templates. Even you can use other template engine with it if you want.
+  1. In our code, we don't use html at all: we use, functions, static methods or anything generated with this library.
+  1. This library works when you call it with a command. It's not meant for being executed during your website execution.
  
 
-To achieve this, this library provides 2 things: Nodes and Attributes.
+To achieve this, this library provides 2 things: **Nodes** and **Attributes**.
 See examples of both above.
 
 Examples
@@ -63,8 +65,11 @@ layout.html
     <!---/class--->
     </body>
 
-The great thing about the template above, is that you can open it in any browser after applying these special comments and is not going to break. So is easy to handle by designers.
-For you (a developer), you have a lot of html you don't care, but you are going to select only the parts you need.
+The great thing about the template above, is that you can open it in any browser after applying these special comments and is not going to break. 
+
+So, for desingers it's easy to work, becouse they just have to care if it is correctly desplayed in the browser.
+
+For you (a developer), you have a lot of html you don't care, like Lorem Ipsum text, test images, test urls, etc. but you are going to select only the parts you need.
 
 
 Nodes
@@ -98,7 +103,7 @@ Output:
     //returns <span> Hello <strong>Homer</strong></span>
 
 
-NODE :: Class
+Node :: Class
 -------------
 Layout.html
 
@@ -127,7 +132,7 @@ With the output you can do this:
 
  
 
-NODE :: Themes
+Node :: Themes
 ---------------
 
     <!---themes: winter /--->
