@@ -84,6 +84,9 @@ or <!---NODE_NAME/--->
 
 Node :: Block
 -------------
+Creates a function using the the containing text.
+
+
 Layout.html
 
     <body>
@@ -99,12 +102,17 @@ Layout.html
 
 Output:
   With the ouput you can do this:
+
     echo hello("Homer"); 
     //returns <span> Hello <strong>Homer</strong></span>
 
 
 Node :: Class
 -------------
+
+Creates a methods using the **method node** containing text.
+Ignores whatever is not in a method node.
+
 Layout.html
 
     <body>
@@ -114,7 +122,7 @@ Layout.html
               <div class= "header">Lorem Ipsum</div>
           <!---/method--->       
 
-               <a>Text we don't use.</a>
+               <a>This is completely ignored since it's not </a>
 
           <!---method: body--->
               <div class= "content">A lot of html</div>
@@ -146,11 +154,11 @@ Attributes
 ==========
 Are special HTML attributes that look like this:
 
-    <div tpl:COMMAND-existingAttribute="VALUE" existingAttribute="lorem ipsum"></div> 
+\<div **tpl:COMMAND-existingAttribute**="VALUE" **existingAttribute**="lorem ipsum">\</div> 
 
 or
 
-    <div tplcontent:COMMAND="VALUE">Lorem Ipsum</div> 
+\<div **tplcontent:COMMAND**="VALUE">**Lorem Ipsum**\</div> 
 
 
 
