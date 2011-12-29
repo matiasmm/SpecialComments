@@ -1,3 +1,13 @@
+Installation
+============
+
+    git clone git://github.com/matubaum/generateFunctionsFromTemplates.git
+    
+Then test it:
+
+    cd generateFunctionsFromTemplates 
+    php generate.php test/original_templates test/generated_templates
+
 This is the problem it tries to solve:
 ======================================
 
@@ -77,12 +87,13 @@ Nodes
 Nodes are HTML comments that look something like this: <!---NODE_NAME---> <!---/NODE_NAME--->
 or <!---NODE_NAME/--->
 
-  - Block
-  - Class
-  - Method
-  - Themes
+  - block
+  - class
+  - method
+  - skip
+  - themes
 
-Node :: Block
+Node :: block
 -------------
 Creates a function using the the containing text.
 
@@ -107,7 +118,7 @@ Output:
     //returns <span> Hello <strong>Homer</strong></span>
 
 
-Node :: Class
+Node :: class
 -------------
 
 Creates a methods using the **method node** containing text.
@@ -138,9 +149,38 @@ With the output you can do this:
     echo $o->body(); 
     //will print <div class= "content">A lot of html</div>
 
+Node :: skip
+----------
+Text inside is going to be ignored, but it's useful for being desplayed in the browser. It also can desplay a content parameter
  
+menues.html
 
-Node :: Themes
+    <!---block: menu_left parameters: $content--->
+    <div id="nav">
+        <ul>
+            <!---skip content: <?php echo $content ?> --->
+            <li>Demo item</li>
+            <li>That</li>
+            <li>Is not</li>
+            <li>going to be</li>
+            <li>parsed</li>
+            <!---/skip--->
+        </ul>
+    </div>
+    <!---/block--->
+
+You can do this: 
+
+    echo menu_left("<li>home</li>");
+returns: 
+
+    <div id="nav">
+        <ul>
+            <li>home</li>
+        </ul>
+    </div>
+
+Node :: themes
 ---------------
 
     <!---themes: winter /--->
@@ -183,3 +223,6 @@ test.html
 output:
 
      <div><?php echo $name ?></div>
+
+
+

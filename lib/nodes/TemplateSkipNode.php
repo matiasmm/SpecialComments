@@ -10,11 +10,9 @@
 		}
 		
 		function nestedRender(){
-			return str_replace('- >' , '->',$this->attributes["content"]);
+			return $this->attributes["content"];
 		}
 		
-		function renderCall($dir_g, $helper_f, array $options= array()){
-			return '';
-		}
+		
 		
 	}
