@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Buttons</title>
+<link href='http://fonts.googleapis.com/css?family=Nova+Mono' rel='stylesheet' type='text/css'/>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body>
+
+    <h3>Botón con una imagen</h3>
+    <!---block: boton1--->
+        <a href="#" tpl:use-href="{value}"><img alt="buy" src="images/buy.gif" tpl:use-src="another/directory/{value}"/></a>
+    <!---/block--->
+
+
+    <!---block: boton2--->
+        <a href="#" tpl:use-href="{value}"><img alt="buy" src="images/buy.gif" tpl:use-src="another/directory/{file}"/></a>
+    <!---/block--->
+
+
+
+    <h3>Botón con css</h3>
+    <!---block: boton3--->
+        <a class="button" href="#"><span>Bring world peace</span></a>
+    <!---/block--->
+
+    <!---block: test--->
+        <!---invisible---><!-- <?php echo "hello" ?> --><!---/invisible--->
+    <!---/block--->
+
+</body>
+</html>
