@@ -215,6 +215,7 @@ Node :: php
 Not recommended to use but it's available if you need it
 
 layout.html
+
    <!---block: function1 --->
       <!---php: <?php echo "something" ?> /--->
    <!---/block--->
@@ -278,6 +279,7 @@ output:
     <a href="#"><img src="another/directory/images/buy.gif" alt="buy"></a>
 
 buttons.html
+
     <!---block: boton2--->
         <a href="#" tpl:use-href="{value}"><img alt="buy" src="images/buy.gif" tpl:use-src="another/directory/{file}"/></a>
     <!---/block--->
