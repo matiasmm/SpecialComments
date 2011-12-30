@@ -39,7 +39,7 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
 
 
 EOF
-                , trim(TemplateAttributeParser::getInstance()->render($this->content)));
+                , $this->content);
     }
 
     function nestedRender() {

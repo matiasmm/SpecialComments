@@ -453,6 +453,7 @@ class ListParser extends Parser {
             if($this->lookahead->type == ListLexer::PHP_OPENING){
                 $token_maybe_attribute = null;
                 $this->wait_for(ListLexer::PHP_CLOSING);
+                $end_value = $this->input->p;
                 if($this->lookahead->type != ListLexer::PHP_CLOSING)
                     $this->error_expecting('?>', $this->lookahead);
             }

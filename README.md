@@ -89,7 +89,9 @@ or <!---NODE_NAME/--->
 
   - block
   - class
+  - invisible
   - method
+  - php
   - skip
   - themes
 
@@ -149,6 +151,25 @@ With the output you can do this:
     echo $o->body(); 
     //will print <div class= "content">A lot of html</div>
 
+Node :: invisible
+----------
+It removes the first html comment \<!-- --> it finds inside it.
+You can add some code you don't want to be rendered in the original template, but you need it in your final template.
+
+
+layout.html
+    <!---block: test--->
+        <!---invisible---><!-- <?php echo "hello" ?> --><!---/invisible--->
+    <!---/block--->
+
+Output:
+With the output you can do this:
+
+
+    echo test();  //it will print hello
+
+
+
 Node :: skip
 ----------
 Text inside is going to be ignored, but it's useful for being desplayed in the browser. It also can desplay a content parameter
@@ -189,6 +210,22 @@ Node :: themes
 Put this at the begining of a template file to indicate, the generated output belongs to a theme.
 It's going to create a different file for each theme.
 
+Node :: php
+---------------
+Not recommended to use but it's available if you need it
+
+layout.html
+   <!---block: function1 --->
+      <!---php: <?php echo "something" ?> /--->
+   <!---/block--->
+
+output:
+With the output you can do this:
+
+    echo function1(); // will print "something"
+
+
+
 
 Attributes
 ==========
@@ -201,8 +238,7 @@ or
 \<div **tplcontent:COMMAND**="VALUE">**Lorem Ipsum**\</div> 
 
 
-
-Attribute :: Replace
+Attribute :: replace
 -------------------
 test.html
 
@@ -225,4 +261,28 @@ output:
      <div><?php echo $name ?></div>
 
 
+Attribute :: use
+-------------------
+You can add 2 special values inside: {value} and {file}. Look at the examples below.
 
+
+
+buttons.html
+
+    <!---block: boton1--->
+        <a href="#" tpl:use-href="{value}"><img alt="buy" src="images/buy.gif" tpl:use-src="another/directory/{value}"/></a>
+    <!---/block--->
+
+output:
+
+    <a href="#"><img src="another/directory/images/buy.gif" alt="buy"></a>
+
+buttons.html
+    <!---block: boton2--->
+        <a href="#" tpl:use-href="{value}"><img alt="buy" src="images/buy.gif" tpl:use-src="another/directory/{file}"/></a>
+    <!---/block--->
+
+output:
+
+    <a href="#"><img src="another/directory/buy.gif" alt="buy"></a>
+This last one, does not contain the "/image/" directory in its src attribute.

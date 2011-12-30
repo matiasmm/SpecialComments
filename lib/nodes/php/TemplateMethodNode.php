@@ -14,7 +14,7 @@ class TemplateMethodNode extends TemplateBlockNode{
 	public function $name($pars){\n  ob_start();\n  ?>%s<?php \n  return ob_get_clean(); \n}\n
 
 EOF
-	, trim(TemplateAttributeParser::getInstance()->render($this->content)));		
+	, $this->content);		
 	}
 	
 	function renderCall($helper_dir_name,$file_helper, array $options= array()){

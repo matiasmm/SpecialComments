@@ -21,8 +21,6 @@ class TemplateInvisibleNode extends TemplateDoubleNode{
 			return $this->show();
 		}
 		
-		function renderCall($helper_dir_name,$file_helper, array $options= array()){
-			return "";
-		}
+	
 	
 }
