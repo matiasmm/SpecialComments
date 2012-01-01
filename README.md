@@ -11,7 +11,7 @@ Then test it:
 This is the problem it tries to solve:
 ======================================
 
-Supouse you are a developer who works in a team with a designer.
+Suppose you are a developer who works in a team with a designer.
 
 Your designer, gives you a set of pure HTML template files like:
 
@@ -77,7 +77,7 @@ layout.html
 
 The great thing about the template above, is that you can open it in any browser after applying these special comments and is not going to break. 
 
-So, for desingers it's easy to work, becouse they just have to care if it is correctly desplayed in the browser.
+So, for designers it's easy to work, because they just have to care if it is correctly displayed in the browser.
 
 For you (a developer), you have a lot of html you don't care, like Lorem Ipsum text, test images, test urls, etc. but you are going to select only the parts you need.
 
@@ -172,7 +172,7 @@ With the output you can do this:
 
 Node :: skip
 ----------
-Text inside is going to be ignored, but it's useful for being desplayed in the browser. It also can desplay a content parameter
+Text inside is going to be ignored, but it's useful for being displayed in the browser. It also can display a content parameter
  
 menues.html
 
@@ -207,7 +207,7 @@ Node :: themes
     <!---themes: winter /--->
     <!---themes: winter, summer, spring, fall /--->
 
-Put this at the begining of a template file to indicate, the generated output belongs to a theme.
+Put this at the beginning of a template file to indicate, the generated output belongs to a theme.
 It's going to create a different file for each theme.
 
 Node :: php
