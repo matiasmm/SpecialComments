@@ -4,7 +4,7 @@ class TemplateCreator{
 	private $nodes = array();
 	private $parser;
 	
-	static public $file_subfix = ".html";
+	public $file_subfix = ".html";
 	static public $skip = array(".", "..", ".svn");
 	
 	static public $name_helper_file = "TemplateHelper.php";
@@ -50,7 +50,7 @@ class TemplateCreator{
 	
 	private $file_names_o = array();
 	protected function getOutputNameFile($output_dir, $file, $prefix='', $level =0){
-		$base  = basename($file, self::$file_subfix);
+		$base  = basename($file, $this->file_subfix);
 		
 		$sub = ($level)? '-'. $level : '';
 		$prefix_a = ($prefix == '*')? '' : '.'. $prefix;
@@ -80,7 +80,7 @@ class TemplateCreator{
             $fn->buildContent();
 
             //render_to_files
-            $base = str_replace(self::$file_subfix, '',basename($file));
+            $base = str_replace($this->file_subfix, '',basename($file));
             foreach($fn->themes as $theme){
                 $file_o = sprintf('%s/generated-helpers/%s.%s.php',$output_dir, $base, $theme);
                 file_put_contents($file_o, $fn->render());
@@ -123,7 +123,7 @@ class TemplateCreator{
 					$this->getTemplateFiles($dir . "/". $base);					
 				}
 			}else{
-				if(substr($base, strlen($base) - strlen(self::$file_subfix)) == self::$file_subfix){
+				if(substr($base, strlen($base) - strlen($this->file_subfix)) == $this->file_subfix){
 					$this->t_files[] = $dir . "/". $base;	
 				}
 			}
