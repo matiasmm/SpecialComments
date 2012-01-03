@@ -17,12 +17,12 @@ class TemplateCreator{
 	
 	function generateHelpersFromDir($dir, $output_dir){
 
-                $this->emptyOutputDir($output_dir);
-		echo "\n Searching template files\n";
+        $this->emptyOutputDir($output_dir);
 		$this->getTemplateFiles($dir);
-                foreach($this->t_files as $file){
-                    $this->createTree($file, $output_dir);
-                }
+        foreach($this->t_files as $file){
+            printf("Generating Functions for \n\t%s\n", $file);
+            $this->createTree($file, $output_dir);
+        }
 		return true;
 	}
 

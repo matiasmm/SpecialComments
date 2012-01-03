@@ -6,7 +6,13 @@ Installation
 Then test it:
 
     cd generateFunctionsFromTemplates 
+    php generate.php --emitter=php test/original_templates test/generated_templates
+
+php is the default emitter, so you can do this instead: 
+
     php generate.php test/original_templates test/generated_templates
+
+And you can create your own emitters to generate other kind of code like twig, python or whatever instead of just php. I will explain it later. 
 
 This is the problem it tries to solve:
 ======================================

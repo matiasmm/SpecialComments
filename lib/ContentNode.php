@@ -12,10 +12,6 @@ class ContentNode extends TemplateBaseNode{
         return $this->content;
     }
 
-    public function  renderCall($generated_dir_name, $helper_base_file, array $options = array()) {
-        ;
-    }
-
     public function  nestedRender() {
        return $this->content;
     }
