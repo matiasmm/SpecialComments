@@ -82,13 +82,13 @@ class TemplateCreator{
             //render_to_files
             $base = str_replace(self::$file_subfix, '',basename($file));
             foreach($fn->themes as $theme){
-                $file_o = sprintf('%sgenerated-helpers/%s.%s.php',$output_dir, $base, $theme);
+                $file_o = sprintf('%s/generated-helpers/%s.%s.php',$output_dir, $base, $theme);
                 file_put_contents($file_o, $fn->render());
                 echo shell_exec("php -l ". $file_o);
             }
             
             if(empty($fn->themes)){
-                $file_o = sprintf('%sgenerated-helpers/%s.php',$output_dir, $base);
+                $file_o = sprintf('%s/generated-helpers/%s.php',$output_dir, $base);
                 file_put_contents($file_o, $fn->render());
                 echo shell_exec("php -l ". $file_o);
 

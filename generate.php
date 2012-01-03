@@ -94,4 +94,4 @@ define('EMITTER_DIR', realpath($emitter_dir));
 ***************************************************************/
 
 $con = new TemplateCreator();
-$con->generateHelpersFromDir($source_directory, $target_directory);
+$con->generateHelpersFromDir(realpath($source_directory), realpath($target_directory));
