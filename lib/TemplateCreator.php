@@ -1,5 +1,5 @@
 <?php
-class TemplateCreator extends BaseTemplateCreator{
+abstract class TemplateCreator{
 	private $t_files = array();
 	private $nodes = array();
 	private $parser;

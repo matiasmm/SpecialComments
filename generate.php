@@ -98,5 +98,6 @@ require_once EMITTER_DIR . '/init.php';
  Parsing files and creating functions
 ***************************************************************/
 
-$con = new TemplateCreator();
+$creator_class = ucfirst($emitter). "TemplateCreator";
+$con = new $creator_class;
 $con->generateHelpersFromDir(realpath($source_directory), realpath($target_directory));
