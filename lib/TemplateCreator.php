@@ -1,24 +1,24 @@
 <?php
 abstract class TemplateCreator{
-	private $t_files = array();
-	private $nodes = array();
-	private $parser;
+	protected $t_files = array();
+	protected $nodes = array();
+	protected $parser;
 	
 	static public $skip = array(".", "..", ".svn");
 	
 	protected $output = array();
 	
 	protected $generated_files = array();
-	
+	private $file_names_o = array();
 	
 	function generateHelpersFromDir($dir, $output_dir){
 
         $this->emptyOutputDir($output_dir);
 		$this->getTemplateFiles($dir);
-        foreach($this->t_files as $file){
-            printf("Generating Functions for \n\t%s\n", $file);
-            $this->createTree($file, $output_dir);
-        }
+                foreach($this->t_files as $file){
+                    printf("Generating Functions for \n\t%s\n", $file);
+                    $this->createTree($file, $output_dir);
+                }
 		return true;
 	}
 
@@ -41,10 +41,8 @@ abstract class TemplateCreator{
 				unlink($g.'/'.$f);
 			}
 		}
-		
 	}
 	
-	private $file_names_o = array();
 	protected function getOutputNameFile($output_dir, $file, $prefix='', $level =0){
 		$base  = basename($file, $this->original_file_subfix);
 		
@@ -60,12 +58,6 @@ abstract class TemplateCreator{
 		$this->file_names_o[] = $name;
 		return $name;
 	}
-	
-
-	
-	
-	
-	
 	
 	protected function createTree($file, $output_dir){
             $lexer = new ListLexer(file_get_contents($file));
@@ -89,13 +81,7 @@ abstract class TemplateCreator{
                 echo shell_exec("php -l ". $file_o);
 
             }
-
-            
 	}
-
-        
-
-
 
 	/**
 	 * fills $t_files

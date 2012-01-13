@@ -9,7 +9,6 @@
                 return;
             }
 
-
             $this->content .= $content_node->render();
         }
 
