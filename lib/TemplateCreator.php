@@ -1,16 +1,12 @@
 <?php
-class TemplateCreator{
+class TemplateCreator extends BaseTemplateCreator{
 	private $t_files = array();
 	private $nodes = array();
 	private $parser;
 	
-	static public $file_subfix = ".html";
 	static public $skip = array(".", "..", ".svn");
 	
-	static public $name_helper_file = "TemplateHelper.php";
-	
 	protected $output = array();
-	protected $single_output = "<?php\n";
 	
 	protected $generated_files = array();
 	
@@ -50,11 +46,11 @@ class TemplateCreator{
 	
 	private $file_names_o = array();
 	protected function getOutputNameFile($output_dir, $file, $prefix='', $level =0){
-		$base  = basename($file, self::$file_subfix);
+		$base  = basename($file, $this->original_file_subfix);
 		
 		$sub = ($level)? '-'. $level : '';
 		$prefix_a = ($prefix == '*')? '' : '.'. $prefix;
-		$candidate_name = $output_dir.'/'. $base .$sub . $prefix_a. ".php";
+		$candidate_name = $output_dir.'/'. $base .$sub . $prefix_a. $this->output_file_subfix;
 		if(file_exists($candidate_name  )){
 			$name = $this->getOutputNameFile($output_dir, $file, $prefix, $level +1);
 		}else{
@@ -80,15 +76,15 @@ class TemplateCreator{
             $fn->buildContent();
 
             //render_to_files
-            $base = str_replace(self::$file_subfix, '',basename($file));
+            $base = str_replace($this->original_file_subfix, '',basename($file));
             foreach($fn->themes as $theme){
-                $file_o = sprintf('%s/generated-helpers/%s.%s.php',$output_dir, $base, $theme);
+                $file_o = sprintf('%s/generated-helpers/%s.%s%s',$output_dir, $base, $theme, $this->output_file_subfix);
                 file_put_contents($file_o, $fn->render());
                 echo shell_exec("php -l ". $file_o);
             }
             
             if(empty($fn->themes)){
-                $file_o = sprintf('%s/generated-helpers/%s.php',$output_dir, $base);
+                $file_o = sprintf('%s/generated-helpers/%s%s',$output_dir, $base, $this->output_file_subfix);
                 file_put_contents($file_o, $fn->render());
                 echo shell_exec("php -l ". $file_o);
 
@@ -123,7 +119,7 @@ class TemplateCreator{
 					$this->getTemplateFiles($dir . "/". $base);					
 				}
 			}else{
-				if(substr($base, strlen($base) - strlen(self::$file_subfix)) == self::$file_subfix){
+				if(substr($base, strlen($base) - strlen($this->original_file_subfix)) == $this->original_file_subfix){
 					$this->t_files[] = $dir . "/". $base;	
 				}
 			}
