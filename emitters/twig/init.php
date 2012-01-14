@@ -2,8 +2,10 @@
 function twig_emitter_autoload($class_name) {
     $path = array();
     $dir = realpath(dirname(__FILE__));
-    $path[] = $dir . '/../php/';
     
+    
+    $path[] = $dir . '/../twig/';
+    $path[] = $dir . '/../php/';
     
     while(count($path) != 0){
         $v = array_shift($path);
@@ -22,7 +24,8 @@ function twig_emitter_autoload($class_name) {
 
 spl_autoload_register("twig_emitter_autoload");
 
-class TwigTemplateCreator extends TemplateCreator{
-    public $original_file_subfix = ".twig";
-    public $output_file_subfix = ".php";
-}
+$dir = realpath(dirname(__FILE__));
+require_once $dir . '/vendors/twig/lib/Twig/Autoloader.php';
+Twig_Autoloader::register();
+
+require realpath(dirname(__FILE__)) . '/TwigTemplateCreator.php';

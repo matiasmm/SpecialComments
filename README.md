@@ -30,7 +30,7 @@ These files have a lot of things you want to use, but some other parts you don't
 
 So, you have to break them, use the parts you need, and convert them into php peaces of code to use them.
 
-#### The idea here is, having these templates prepared in this way, add some html special comments \<!--- special tag --->, to retrieve the just parts we are going to use and convert them into functions. ####
+#### The idea here is, having these templates prepared in this way, add some html special comments (\<!---  --->), to retrieve just the parts we are going to use and convert them into functions. ####
 
 That is the main problem it's meant to solve: You have a whole template, and you want to use some parts leaving the templates visually untouched.
 

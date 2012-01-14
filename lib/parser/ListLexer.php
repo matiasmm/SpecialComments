@@ -33,6 +33,7 @@ class ListLexer extends Lexer {
 
     const HTML_COMMENT_OPENING= 22; //  <!--
     const HTML_COMMENT_CLOSING= 23; //  -->
+    const NOT_RECOGNIZED= 24; //Not a letter, not something above
     
     static $tokenNames = array("n/a", "<EOF>",
                                "NAME", "COMMA",
@@ -210,6 +211,7 @@ class ListLexer extends Lexer {
                 break;
                 default:
                     $this->consume();
+                    return new Token(self::NOT_RECOGNIZED, $this->c);
             }
         }
         return new Token(self::EOF_TYPE,"<EOF>");

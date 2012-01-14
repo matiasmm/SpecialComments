@@ -17,11 +17,16 @@ abstract class TemplateCreator{
 		$this->getTemplateFiles($dir);
                 foreach($this->t_files as $file){
                     printf("Generating Functions for \n\t%s\n", $file);
-                    $this->createTree($file, $output_dir);
+                    $file_node = $this->createTree($file);
+                    $this->parsedTreeToFile($file_node, $output_dir);
                 }
 		return true;
 	}
 
+        /**
+         * Deletes all content in dir $dir_p
+         * @param type $dir_p
+         */
 	protected function emptyOutputdir($dir_p){
                 $output_dir = realpath($dir_p);
                 if($output_dir === false){
@@ -59,7 +64,12 @@ abstract class TemplateCreator{
 		return $name;
 	}
 	
-	protected function createTree($file, $output_dir){
+        /**
+         * Converts the content of a template file into a tree of all nodes parsed
+         * using Parser and Lexer
+         * @param string $file
+         */
+	protected function createTree($file){
             $lexer = new ListLexer(file_get_contents($file));
             $parser = new ListParser($lexer);
             $parser->parse(); // begin parsing at rule list
@@ -67,21 +77,10 @@ abstract class TemplateCreator{
             
             $fn->buildContent();
 
-            //render_to_files
-            $base = str_replace($this->original_file_subfix, '',basename($file));
-            foreach($fn->themes as $theme){
-                $file_o = sprintf('%s/generated-helpers/%s.%s%s',$output_dir, $base, $theme, $this->output_file_subfix);
-                file_put_contents($file_o, $fn->render());
-                echo shell_exec("php -l ". $file_o);
-            }
-            
-            if(empty($fn->themes)){
-                $file_o = sprintf('%s/generated-helpers/%s%s',$output_dir, $base, $this->output_file_subfix);
-                file_put_contents($file_o, $fn->render());
-                echo shell_exec("php -l ". $file_o);
-
-            }
+            return $fn;
 	}
+        
+        
 
 	/**
 	 * fills $t_files
