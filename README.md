@@ -113,14 +113,14 @@ Layout.html
 
       <!---block: hello parameters: $name--->
           <div>
-              <span> Hello <strong tplcontent:replace="<?php echo $name?>">Mr Simpson</b> </strong>
+              <span> Hello <strong tplcontent:replace="<?php echo $name?>">Mr Simpson </strong></span>
           </div>    
       <!---/block--->
 
     </body>
 
 Output:
-  With the ouput you can do this:
+  With the output you can do this:
 
     echo hello("Homer"); 
     //returns <span> Hello <strong>Homer</strong></span>
@@ -135,7 +135,7 @@ Ignores whatever is not in a method node.
 Layout.html
 
     <body>
-      <!---class: Layout ---->
+      <!---class: Layout --->
 
           <!---method: header--->
               <div class= "header">Lorem Ipsum</div>
@@ -159,7 +159,7 @@ With the output you can do this:
 
 Node :: invisible
 ----------
-It removes the first html comment \<!-- --> it finds inside it.
+It removes the first html comment \<!-- --> it finds inside.
 You can add some code you don't want to be rendered in the original template, but you need it in your final template.
 
 

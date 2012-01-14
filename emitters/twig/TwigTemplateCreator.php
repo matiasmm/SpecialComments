@@ -6,14 +6,12 @@ class TwigTemplateCreator extends TemplateCreator{
     protected static $twig;
     
     static function twigToPhp($string){
-        if(self::$twig === null){
             $loader = new Twig_Loader_String();
-            self::$twig = new Twig_Environment($loader);
-            self::$twig->setCompiler(new TemplateTwigCompiler(self::$twig));
-        }
+            $twig = new Twig_Environment($loader);
+            $twig->setCompiler(new TemplateTwigCompiler($twig));
         
-        $module = self::$twig->parse(self::$twig->tokenize($string, null)); 
-        return self::$twig->compile($module);
+        $module = $twig->parse($twig->tokenize($string, null)); 
+        return $twig->compile($module);
     }
     
     /**

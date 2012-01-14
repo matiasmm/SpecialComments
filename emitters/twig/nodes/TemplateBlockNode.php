@@ -8,7 +8,6 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
     public $called_render_for_theme = array();
     static protected $blocks_rendered_call = array();
     
-    protected $parameters = array();
 
     protected function getParametersString($with_default=false) {
         if (!$with_default) {
@@ -29,7 +28,7 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
     }
     
     function createContext(){
-        $r  = 'array(';
+        $r  = '$context = array(';
         foreach($this->parameters as $par){
             $r .= sprintf('"%s"=> $%s,', $par, $par);
         }
