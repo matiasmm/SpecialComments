@@ -1,0 +1,62 @@
+
+      <!---block: hello parameters: name--->
+          <div>
+              <span> Hello <strong tplcontent:replace="{{name}}">Mr Simpson</strong></span>
+          </div>    
+      <!---/block--->
+
+  <!---class: Layout --->
+
+      <!---method: header--->
+          <div class= "header">Lorem Ipsum</div>
+      <!---/method--->       
+
+           <a>This is completely ignored since it's not </a>
+
+      <!---method: body--->
+          <div class= "content">A lot of html</div>
+      <!---/method--->
+  <!---/class--->
+
+    <!---block: invisible_test parameters: name --->
+        <!---invisible---><!-- 
+                This string can't be seen because it's inside an HTML comment, 
+                but since it is inside an invisible node. This is going to appear in the parsed file.
+                And you will be able to render this variable: {{name}}
+        --><!---/invisible--->
+    <!---/block--->
+
+
+
+    <!---block: menu_left parameters: content--->
+    <div id="nav">
+        <ul>
+            <!---skip content: {{content}} --->
+            <li>Demo item</li>
+            <li>That</li>
+            <li>Is not</li>
+            <li>going to be</li>
+            <li>parsed</li>
+            <!---/skip--->
+        </ul>
+    </div>
+    <!---/block--->
+
+   <!---block: twig_raw_code --->
+        Here we include another template.
+      <!---twig: {% include 'sidebar.html' %} /--->
+   <!---/block--->
+
+
+<!---block: test_replace_attribute parameters: url --->
+   <a tpl:replace-href="{{url}}" href="http://google.com">Go to some url</a>
+<!---/block--->
+
+    <!---block: test_replace_attribute_2 parameters: name --->
+      <div tplcontent:replace="{{name}}">Mr. Simpson</div>
+    <!---/block--->
+
+
+<!---block: boton2--->
+    <a href="#" tpl:use-href="{value}"><img alt="buy" src="images/buy.gif" tpl:use-src="another/directory/{file}"/></a>
+<!---/block--->

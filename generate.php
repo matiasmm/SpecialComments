@@ -6,10 +6,9 @@
  Autoloading function
  ***************************************************************/
 
-function __autoload($class_name) {
+function default_autoload($class_name) {
     $base = dirname(__FILE__). '/lib/*';
     $path[] = $base;
-    $path[] = EMITTER_DIR . '/*';
     
     while(count($path) != 0){
         $v = array_shift($path);
@@ -24,8 +23,8 @@ function __autoload($class_name) {
             }
         }
     }
-    require_once "./" . $class_name . ".php"; 
 }
+
 
 
 /**************************************************************
@@ -87,11 +86,18 @@ $emitter_dir = dirname(__FILE__) . '/emitters/' . $emitter;
 if(is_dir($emitter_dir) === false || is_readable($emitter_dir) === false){
     printf("'%s' is not a valid emitter", $emitter); die;
 }
+
+
 define('EMITTER_DIR', realpath($emitter_dir));
+spl_autoload_register("default_autoload");
+require_once EMITTER_DIR . '/init.php';
+
+
 
 /**************************************************************
  Parsing files and creating functions
 ***************************************************************/
 
-$con = new TemplateCreator();
+$creator_class = ucfirst($emitter). "TemplateCreator";
+$con = new $creator_class;
 $con->generateHelpersFromDir(realpath($source_directory), realpath($target_directory));
