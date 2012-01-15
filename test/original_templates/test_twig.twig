@@ -41,3 +41,22 @@
         </ul>
     </div>
     <!---/block--->
+
+   <!---block: twig_raw_code --->
+        Here we include another template.
+      <!---twig: {% include 'sidebar.html' %} /--->
+   <!---/block--->
+
+
+<!---block: test_replace_attribute parameters: url --->
+   <a tpl:replace-href="{{url}}" href="http://google.com">Go to some url</a>
+<!---/block--->
+
+    <!---block: test_replace_attribute_2 parameters: name --->
+      <div tplcontent:replace="{{name}}">Mr. Simpson</div>
+    <!---/block--->
+
+
+<!---block: boton2--->
+    <a href="#" tpl:use-href="{value}"><img alt="buy" src="images/buy.gif" tpl:use-src="another/directory/{file}"/></a>
+<!---/block--->

@@ -8,6 +8,7 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
     public $called_render_for_theme = array();
     static protected $blocks_rendered_call = array();
     
+    protected $parameters = array();
 
     protected function getParametersString($with_default=false) {
         if (!$with_default) {
@@ -15,6 +16,9 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
             $pars = explode(',', $this->attributes['parameters']);
             $i = 0;
             foreach ($pars as $p) {
+                if(!trim($p)){
+                    continue;
+                }
                 $str_par = current(explode('=', $p));
                 $rtr.= '$'.$str_par;
                 $this->parameters[] = $str_par;
