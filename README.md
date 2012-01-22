@@ -1,13 +1,13 @@
 Installation
 ============
 
-    git clone git://github.com/matubaum/generateFunctionsFromTemplates.git
+    git clone git://github.com/matubaum/SpecialComments.git
     git submodule init
     git submodule update
     
 Then test it:
 
-    cd generateFunctionsFromTemplates 
+    cd SpecialComments
     php generate.php --emitter=php test/original_templates test/generated_templates
     php generate.php --emitter=twig test/original_templates test/generated_templates
 
@@ -54,8 +54,8 @@ Examples
 
 layout.html
 
-  - [[For examples, using Php as a template engine]](https://github.com/matubaum/generateFunctionsFromTemplates/wiki/Php-Emitter)
-  - [[For examples, using Twig as a template engine]](https://github.com/matubaum/generateFunctionsFromTemplates/wiki/Twig-Emitter)
+  - [[For examples, using Php as a template engine]](https://github.com/matubaum/SpecialComments/wiki/Php-Emitter)
+  - [[For examples, using Twig as a template engine]](https://github.com/matubaum/SpecialComments/wiki/Twig-Emitter)
 
 
 The great thing about it, is that you can open it in any browser after applying these special comments and is not going to break. 
