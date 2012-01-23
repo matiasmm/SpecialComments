@@ -11,7 +11,6 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
     protected $parameters = array();
 
     protected function getParametersString($with_default=false) {
-        if (!$with_default) {
             $rtr = '';
             $pars = explode(',', $this->attributes['parameters']);
             $i = 0;
@@ -27,13 +26,11 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
                 $i++;
             }
             return $rtr;
-        }
-        return $this->attributes['parameters'];
     }
     
     function createContext(){
         $r  = '$context = array(';
-        foreach($this->parameters as $par){
+        foreach((array)$this->attributes['parameters'] as $par){
             $r .= sprintf('"%s"=> $%s,', $par, $par);
         }
         $r .= ');'; 
