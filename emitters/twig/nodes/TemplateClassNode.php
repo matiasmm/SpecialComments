@@ -33,7 +33,7 @@ class $name{
 
   function __construct(){
       \$loader = new Twig_Loader_String();
-      \$this->env = new Twig_Environment($loader);
+      \$this->env = new Twig_Environment(\$loader);
   }
 
 %s
