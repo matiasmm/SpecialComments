@@ -9,6 +9,7 @@ abstract class TemplateBaseNode implements TemplateNode{
 
         protected $info;
         protected $k=0;
+        public $file, $line, $col;
 
         protected $is_nested = false;
 
@@ -30,13 +31,13 @@ abstract class TemplateBaseNode implements TemplateNode{
 
                 foreach($this->attributes as $attr => $vv){
                         if(!in_array($attr, $this->allowed_attributes)){
-                                throw new Exception("$attr is not an allowed attribute for $name Tag. In File: '". TemplateParserContext::get()->getFile().":" .TemplateParserContext::get()->getLine(). "'");
+                               print "\n'$attr' is not an allowed attribute for '$name' Tag. In File: '" . $this->file.". Line: ". $this->line .":" . $this->col. "'\n";
                         }
                 }
 
                 foreach($this->mandatory_attributes as $vv){
                         if(!array_key_exists($vv, $this->attributes)){
-                                throw new Exception("You must add the attribute $vv for $name Tag. In File: '". TemplateParserContext::get()->getFile() . ":" .TemplateParserContext::get()->getLine(). "'");
+                                print "\nYou must add the attribute $vv for $name Tag.  In File: '" . $this->file.". Line: ". $this->line .":" . $this->col. "'\n";
                         }
                 }
 

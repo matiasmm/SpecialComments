@@ -74,6 +74,7 @@ abstract class TemplateCreator{
             $parser = new ListParser($lexer);
             $parser->parse(); // begin parsing at rule list
             $fn = new FileNode(array('file' => $file), $parser->tree);
+            $fn->file = $file;
             
             $fn->buildContent();
 
