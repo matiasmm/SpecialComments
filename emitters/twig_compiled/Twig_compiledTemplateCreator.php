@@ -25,7 +25,7 @@ class TwigTemplateCreator extends TemplateCreator{
         $base = str_replace($this->original_file_subfix, '',basename($file_node->getAttribute('file')));
         foreach($file_node->themes as $theme){
             $file_o = sprintf('%s/generated-helpers/%s.%s%s',$output_dir, $base, $theme, $this->output_file_subfix);
-            file_put_contents($file_o, $file_node->render());
+            file_put_contents($file_o, $twig->compileSource($file_node->render()));
             echo shell_exec("php -l ". $file_o);
         }
 

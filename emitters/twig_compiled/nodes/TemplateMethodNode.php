@@ -13,11 +13,11 @@ class TemplateMethodNode extends TemplateBlockNode{
 			$pars = $this->getParametersString(true);
 			
 			return sprintf(<<<EOF
-	public function $name($pars){\n  ob_start();\n %s\n \$this->twig->render('%s', \$context); \n  return ob_get_clean(); \n}\n
+	public function $name($pars){\n  ob_start();\n %s\n %s \n  return ob_get_clean(); \n}\n
 
 EOF
 	, $this->createContext() 
-        , addslashes($this->content));
+        , TwigTemplateCreator::twigToPhp($this->content));
 	}
 	
 	function renderCall($helper_dir_name,$file_helper, array $options= array()){

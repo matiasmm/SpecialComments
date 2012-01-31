@@ -29,10 +29,11 @@ class TemplateClassNode extends TemplateDoubleNode implements TemplateNodeVerify
 <?php 
 class $name{
 
-  protected \$twig;
+  protected \$env;
 
-  function __construct(\$twig){
-      \$this->env = \$twig;
+  function __construct(){
+      \$loader = new Twig_Loader_String();
+      \$this->env = new Twig_Environment(\$loader);
   }
 
 %s

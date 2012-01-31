@@ -22,7 +22,7 @@ abstract class TemplateDoubleNode extends TemplateBaseNode{
                     case 's':
                         $c = sprintf("Template%sNode", ucfirst($b->text));
                         $o = new $c($b->attributes);
-                        list($o->line, $o->col) = array($b->data['line'], $b->token->data['col']);
+                        list($o->line, $o->col) = array($b->token->data['line'], $b->token->data['col']);
                         $o->file = $this->file;
                         $o->setup($b->token);
                         $this->concatContent($o);

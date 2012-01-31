@@ -4,7 +4,7 @@ function twig_emitter_autoload($class_name) {
     $dir = realpath(dirname(__FILE__));
     
     
-    $path[] = $dir . '/../twig/';
+    $path[] = $dir . '/../twig_compiled/';
     $path[] = $dir . '/../php/';
     
     while(count($path) != 0){
