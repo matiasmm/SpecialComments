@@ -32,7 +32,7 @@ class $name{
   protected \$twig;
 
   function __construct(\$twig){
-      \$this->env = \$twig;
+      \$this->twig = \$twig;
   }
 
 %s

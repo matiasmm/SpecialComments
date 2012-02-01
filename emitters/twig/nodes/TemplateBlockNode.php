@@ -50,13 +50,13 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
         return sprintf(<<<EOF
 	<?php function $name($pars){ 
             %s
-		%s
+		return \$this->twig->render("%s");
 	} ?>
 
 
 EOF
         , $this->createContext() 
-        , TwigTemplateCreator::twigToPhp($this->content));
+        , addslashes($this->content));
     }
 
     function nestedRender() {
@@ -64,7 +64,7 @@ EOF
         $pars = $this->getParametersString();
 
         return sprintf(<<<EOF
-	public function $name($pars){\n  ob_start();\n  %s %s \n  return ob_get_clean(); \n}\n
+	public function $name($pars){\n  %s  ;\n \$this->twig->render("%s"); \n }\n
 
 EOF
                 , $this->createContext() 

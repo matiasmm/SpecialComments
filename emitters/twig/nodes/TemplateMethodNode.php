@@ -13,7 +13,7 @@ class TemplateMethodNode extends TemplateBlockNode{
 			$pars = $this->getParametersString(true);
 			
 			return sprintf(<<<EOF
-	public function $name($pars){\n  ob_start();\n %s\n \$this->twig->render('%s', \$context); \n  return ob_get_clean(); \n}\n
+	public function $name($pars){\n  \n %s\n return \$this->twig->render("%s", \$context); \n }\n
 
 EOF
 	, $this->createContext() 
