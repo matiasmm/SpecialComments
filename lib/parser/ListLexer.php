@@ -33,7 +33,9 @@ class ListLexer extends Lexer {
 
     const HTML_COMMENT_OPENING= 22; //  <!--
     const HTML_COMMENT_CLOSING= 23; //  -->
-    const NOT_RECOGNIZED= 24; //Not a letter, not something above
+    const CURLY_BRACKET_OPENING= 24; //  {
+    const CURLY_BRACKET_CLOSING= 25; //  }
+    const NOT_RECOGNIZED= 26; //Not a letter, not something above
     
     static $tokenNames = array("n/a", "<EOF>",
                                "NAME", "COMMA",
@@ -56,6 +58,9 @@ class ListLexer extends Lexer {
                                 "MINUS",
                                 "HTML_COMMENT_OPENING",
                                 "HTML_COMMENT_CLOSING",
+                                "CURLY_BRACKET_OPENING",
+                                "CURLY_BRACKET_CLOSING",
+                                "NOT_RECOGNIZED",
                                 );
     
     public function getTokenName($x) {
@@ -175,6 +180,12 @@ class ListLexer extends Lexer {
                 case '"':
                     $this->consume();
                     return new Token(self::DOUBLE_QUOTE, '"');
+                case '}':
+                    $this->consume();
+                    return new Token(self::CURLY_BRACKET_CLOSING, '}');
+                case '{':
+                    $this->consume();
+                    return new Token(self::CURLY_BRACKET_OPENING, '{');
                 case '=':
                     $this->consume();
                     return new Token(self::EQUAL, '=');

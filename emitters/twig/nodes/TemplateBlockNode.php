@@ -56,7 +56,7 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
 
 EOF
         , $this->createContext() 
-        , addslashes($this->content));
+        , strtr(trim($this->content), array('"' => '\"')));
     }
 
     function nestedRender() {
@@ -68,7 +68,7 @@ EOF
 
 EOF
                 , $this->createContext() 
-                , TwigTemplateCreator::twigToPhp(trim($this->content)));
+                , strtr(trim($this->content), array('"' => '\"')));
     }
 
     function getAttrName() {

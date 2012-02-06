@@ -17,7 +17,7 @@ class TemplateMethodNode extends TemplateBlockNode{
 
 EOF
 	, $this->createContext() 
-        , addslashes($this->content));
+        , strtr(trim($this->content), array('"' => '\"')));
 	}
 	
 	function renderCall($helper_dir_name,$file_helper, array $options= array()){

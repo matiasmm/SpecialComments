@@ -468,10 +468,18 @@ class ListParser extends Parser {
                 $this->wait_for(ListLexer::SIMPLE_QUOTE);
                 if($this->lookahead->type != ListLexer::SIMPLE_QUOTE)
                     $this->error_expecting("'", $this->lookahead);
-            }elseif($this->lookahead->type == ListLexer::NAME){
+            }
+            elseif($this->lookahead->type == ListLexer::CURLY_BRACKET_OPENING){
+                $token_maybe_attribute = null;
+                $this->wait_for(ListLexer::CURLY_BRACKET_CLOSING);
+                if($this->lookahead->type != ListLexer::CURLY_BRACKET_CLOSING)
+                    $this->error_expecting("}", $this->lookahead);
+            }
+            elseif($this->lookahead->type == ListLexer::NAME){
                 $token_maybe_attribute = $this->lookahead;
                 $token_maybe_attribute->data['char'] = $f_end_value;
-            }else{
+            }
+            else{
                 $token_maybe_attribute = null;
             
             }
