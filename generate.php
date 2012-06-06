@@ -70,21 +70,21 @@ if(count($pars)<2){
 list($source_directory, $target_directory) = $pars;
 
 if(false === is_dir($source_directory)){
-    printf("'%s' is not a valid directory", $source_directory); die;
+    printf("'%s' is not a valid directory\n", $source_directory); die;
 }elseif(false === is_readable($source_directory)){
-    printf("The directory '%s' is not readable", $source_directory); die;
+    printf("The directory '%s' is not readable\n", $source_directory); die;
 }
 
 if(false === is_dir($target_directory)){
-    printf("'%s' is not a valid directory", $target_directory); die;
+    printf("'%s' is not a valid directory\n", $target_directory); die;
 }elseif(false === is_readable($target_directory)){
-    printf("The directory '%s' is not readable", $target_directory); die;
+    printf("The directory '%s' is not readable\n", $target_directory); die;
 }
 
 $emitter =  (isset($args['emitter']))? $args['emitter'] : 'php';
 $emitter_dir = dirname(__FILE__) . '/emitters/' . $emitter;
 if(is_dir($emitter_dir) === false || is_readable($emitter_dir) === false){
-    printf("'%s' is not a valid emitter", $emitter); die;
+    printf("'%s' is not a valid emitter\n", $emitter); die;
 }
 
 

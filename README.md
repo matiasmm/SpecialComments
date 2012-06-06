@@ -2,8 +2,6 @@ Installation
 ============
 
     git clone git://github.com/matubaum/SpecialComments.git
-    git submodule init
-    git submodule update
     
 Then test it:
 
@@ -58,7 +56,7 @@ layout.html
   - [[For examples, using Twig as a template engine]](https://github.com/matubaum/SpecialComments/wiki/Twig-Emitter)
 
 
-The great thing about it, is that you can open it in any browser after applying these special comments and is not going to break. 
+The great thing about it, is that you can open it in any browser after applying these special comments and the page is going to be displayed as if they were not in there. 
 
 So, for designers it's easy to work, because they just have to care about if it's correctly displayed in the browser.
 

@@ -19,24 +19,13 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
                     continue;
                 }
                 $str_par = current(explode('=', $p));
-                $rtr.= '$'.trim($str_par);
+                $rtr.= trim($str_par);
                 $this->parameters[] = $str_par;
                 if (isset($pars[$i + 1]))
                     $rtr.=',';
                 $i++;
             }
             return $rtr;
-    }
-    
-    function createContext(){
-        $r  = '$context = array(';
-        $attrs = explode(',', $this->attributes['parameters']);
-        foreach($attrs as $par){
-            if(trim($par))
-                $r .= sprintf('"%s"=> $%s,', trim($par), trim($par));
-        }
-        $r .= ');'; 
-        return $r;
     }
 
     function render() {
@@ -48,15 +37,10 @@ class TemplateBlockNode extends TemplateDoubleNode implements TemplateNodeVerify
         $pars = $this->getParametersString();
 
         return sprintf(<<<EOF
-	<?php function $name($pars){ 
-            %s
-		%s
-	} ?>
-
-
+{%% macro  $name($pars) %%}\n%s
+{%% endmacro %%}\n\n
 EOF
-        , $this->createContext() 
-        , TwigTemplateCreator::twigToPhp($this->content));
+        ,trim($this->content));
     }
 
     function nestedRender() {
@@ -64,11 +48,10 @@ EOF
         $pars = $this->getParametersString();
 
         return sprintf(<<<EOF
-	public function $name($pars){\n  ob_start();\n  %s %s \n  return ob_get_clean(); \n}\n
-
+{%% macro  $name($pars) %%}\n%s
+{%% endmacro %%}\n\n
 EOF
-                , $this->createContext() 
-                , TwigTemplateCreator::twigToPhp(trim($this->content)));
+                ,trim($this->content));
     }
 
     function getAttrName() {

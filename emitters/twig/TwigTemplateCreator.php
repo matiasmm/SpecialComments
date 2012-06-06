@@ -1,7 +1,7 @@
 <?php
 class TwigTemplateCreator extends TemplateCreator{
     public $original_file_subfix = ".html";
-    public $output_file_subfix = ".php";
+    public $output_file_subfix = ".html.twig";
     
     protected static $twig;
     
