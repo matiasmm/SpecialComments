@@ -24,8 +24,4 @@ function twig_emitter_autoload($class_name) {
 
 spl_autoload_register("twig_emitter_autoload");
 
-$dir = realpath(dirname(__FILE__));
-require_once $dir . '/vendors/twig/lib/Twig/Autoloader.php';
-Twig_Autoloader::register();
-
 require realpath(dirname(__FILE__)) . '/TwigTemplateCreator.php';
