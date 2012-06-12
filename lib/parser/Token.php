@@ -12,6 +12,7 @@ class Token {
     }
     
     public function __toString() {
+	
         $tname = ListLexer::$tokenNames[$this->type];
         return "<'" . $this->text . "'," . $tname . ">";
     }

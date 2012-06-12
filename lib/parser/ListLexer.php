@@ -56,6 +56,7 @@ class ListLexer extends Lexer {
                                 "MINUS",
                                 "HTML_COMMENT_OPENING",
                                 "HTML_COMMENT_CLOSING",
+                                "NOT_RECOGNIZED",
                                 );
     
     public function getTokenName($x) {
